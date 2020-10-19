@@ -2,12 +2,20 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { errors } from 'celebrate'
+import cors from 'cors'
 
 import routes from './routes'
 
 dotenv.config()
 const app = express()
 
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Enconding'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json())
 

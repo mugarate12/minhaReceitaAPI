@@ -1,3 +1,5 @@
+import { Response }  from 'express'
+
 class AppError extends Error {
   public name: string;
   public httpCode: number;
@@ -14,6 +16,15 @@ class AppError extends Error {
 
     Error.captureStackTrace(this)
   }
+}
+
+export function errorHandler(error: AppError, res: Response) {
+  return res.status(error.httpCode).json({
+    error: {
+      name: error.name,
+      message: error.message
+    }
+  })
 }
 
 export default AppError

@@ -19,7 +19,7 @@ class AppError extends Error {
 }
 
 export function errorHandler(error: AppError, res: Response) {
-  return res.status(error.httpCode).json({
+  return res.status(error.httpCode | 400).json({
     error: {
       name: error.name,
       message: error.message

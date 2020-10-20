@@ -1,6 +1,6 @@
 import { Response }  from 'express'
 
-class AppError extends Error {
+export class AppError extends Error {
   public name: string;
   public httpCode: number;
   public isOperational: boolean;
@@ -26,5 +26,3 @@ export function errorHandler(error: AppError, res: Response) {
     }
   })
 }
-
-export default AppError

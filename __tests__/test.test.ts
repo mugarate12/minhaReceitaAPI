@@ -1,5 +1,5 @@
 import app from './../src/app'
-const request = require('supertest')
+import request from 'supertest'
 
 describe('Test Routes', () => {
   it('should test sucess result', async () => {
@@ -8,9 +8,9 @@ describe('Test Routes', () => {
     expect(result.status).toBe(200)
   })
 
-  // it('should test failure result', async () => {
-  //   const result = await request(app).get('/test/name')
+  it('should test failure result', async () => {
+    const result = await request(app).get('/test/name')
 
-  //   expect(result.status).toBe(400)
-  // })
+    expect(result.status).toBe(400)
+  })
 })

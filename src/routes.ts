@@ -1,5 +1,8 @@
 import { Router } from 'express'
-import AppError, { errorHandler } from './utils/handleError'
+import { celebrate, Joi, Segments } from 'celebrate'
+
+import { userController } from './controllers';
+import { errorHandler, AppError } from './utils/handleError'
 
 const routes = Router()
 
@@ -16,5 +19,14 @@ routes.get(`/test/:id`, async (req, res) => {
 
   return res.status(200).json({ id: id })
 })
+
+// user routes
+routes.post('/users', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+  })
+}), userController.create)
 
 export default routes

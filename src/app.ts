@@ -5,9 +5,8 @@ import { errors } from 'celebrate'
 import cors from 'cors'
 import swaggerUI from 'swagger-ui-express'
 
-const swaggerDocument = require('./docs/minha-receita-beta.json')
-
 import routes from './routes'
+const swaggerDocument = require('./minhaReceitaAPISwaggerDocs.json')
 
 dotenv.config()
 const app = express()

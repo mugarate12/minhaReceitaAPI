@@ -1,0 +1,245 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This a API to Minha Receita",
+    "version": "1.0.0",
+    "title": "Minha Receita API",
+    "contact": {
+      "email": "serjumano17@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "virtserver.swaggerhub.com",
+  "basePath": "/mateus-Cardoso/MinhaReceita/1.0.0",
+  "tags": [
+    {
+      "name": "users",
+      "description": "Users operations"
+    },
+    {
+      "name": "session",
+      "description": "Create or manage session for Authorization"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "create user",
+        "description": "create a new user",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "New User Object",
+            "description": "new username",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Seu Nome"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "SeuEmail@mail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "Minhasenha123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user created sucessful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sucess": {
+                  "type": "string",
+                  "example": "Usuário criado com sucesso!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "celebrate input error"
+          },
+          "406": {
+            "description": "database error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Database Error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Campos invalidos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/session": {
+      "post": {
+        "tags": [
+          "session"
+        ],
+        "summary": "create a new session",
+        "description": "to create session return token",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Credentials Object",
+            "description": "inputs to validate user",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "youremail@mail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "yourpassword"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "return a JWT TOKEN",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "aaaaa.bbbb.ccc"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "celebrate validate inputs error"
+          },
+          "406": {
+            "description": "input value error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Campos inválidos"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Verifique as informações do usuário e tente novamente"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "session"
+        ],
+        "summary": "request new password for user",
+        "description": "request a new password for user, and this send for user email",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Update payload",
+            "description": "send email",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "useremail@mail.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "new password sended to user email"
+          },
+          "400": {
+            "description": "celebrate validate inputs error"
+          },
+          "406": {
+            "description": "d",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Database Update Error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Erro ao tentar alterar a senha do usuário"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "InventoryItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "releaseDate"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name": {
+          "type": "string",
+          "example": "Widget Adapter"
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2016-08-29T09:12:33.001Z"
+        }
+      }
+    }
+  }
+}

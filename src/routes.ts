@@ -3,6 +3,7 @@ import { celebrate, Joi, Segments } from 'celebrate'
 
 import { userController, sessionController } from './controllers'
 import { errorHandler, AppError } from './utils'
+import authJWT from './middlewares/authJWT'
 
 const routes = Router()
 
@@ -28,6 +29,8 @@ routes.post('/users', celebrate({
     password: Joi.string().required()
   })
 }), userController.create)
+
+routes.get('/users', authJWT, userController.index)
 
 // session routes
 routes.post('/session', celebrate({

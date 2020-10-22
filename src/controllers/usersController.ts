@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import connection from './../database/connection'
 import { UsersInterface } from './../database/interfaces'
 import { TABLE_USERS_NAME } from './../database/types'
+import { usersValidators } from './../validators';
 import { errorHandler, AppError } from './../utils'
 
 export default class UserController {
@@ -30,4 +31,27 @@ export default class UserController {
           return errorHandler(new AppError('Database Error', 406, 'Erro ao inserir informações no banco de dados', true), res)
         })
   }
+  
+  public index = async (req: Request, res: Response) => {
+    try {
+      const userID = String(res.getHeader('userID'))
+      usersValidators.authUser(userID)
+
+      return await connection<UsersInterface>(TABLE_USERS_NAME)
+        .select('email', 'name')
+        .where({
+          id: userID
+        })
+        .first()
+        .then(user => {
+          return res.status(200).json({ user: user })
+        })
+        .catch((err: Error) => {
+          return new AppError(err.name, 406, err.message, true)
+        })
+    } catch (err) {
+      return errorHandler(err, res)
+    }
+  }
+  
 }

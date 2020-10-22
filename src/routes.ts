@@ -37,4 +37,10 @@ routes.post('/session', celebrate({
   })
 }), sessionController.create)
 
+routes.put('/session', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    email: Joi.string().email().required()
+  })
+}), sessionController.update)
+
 export default routes

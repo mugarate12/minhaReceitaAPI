@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
 
-import { userController, sessionController } from './controllers';
+import { userController, sessionController } from './controllers'
 import { errorHandler, AppError } from './utils/handleError'
 
 const routes = Router()

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
 
-import { userController } from './controllers';
+import { userController, sessionController } from './controllers';
 import { errorHandler, AppError } from './utils/handleError'
 
 const routes = Router()
@@ -28,5 +28,13 @@ routes.post('/users', celebrate({
     password: Joi.string().required()
   })
 }), userController.create)
+
+// session routes
+routes.post('/session', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+  })
+}), sessionController.create)
 
 export default routes

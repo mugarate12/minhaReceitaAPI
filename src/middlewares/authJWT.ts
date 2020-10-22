@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express'
 import connection from './../database/connection'
 import { UsersInterface } from './../database/interfaces'
 import { TABLE_USERS_NAME } from './../database/types'
-import { AppError, errorHandler } from './../utils/handleError';
+import { AppError, errorHandler } from './../utils'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'Secret'
 

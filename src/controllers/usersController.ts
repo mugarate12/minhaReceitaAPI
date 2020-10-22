@@ -2,10 +2,10 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
-import { errorHandler, AppError } from './../utils/handleError'
 import connection from './../database/connection'
 import { UsersInterface } from './../database/interfaces'
 import { TABLE_USERS_NAME } from './../database/types'
+import { errorHandler, AppError } from './../utils'
 
 export default class UserController {
   public create = async (req: Request, res: Response) => {

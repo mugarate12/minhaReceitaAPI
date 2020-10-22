@@ -5,10 +5,12 @@ import { v4 as uuidv4 } from 'uuid'
 import connection from './../database/connection'
 import { UsersInterface } from './../database/interfaces'
 import { TABLE_USERS_NAME } from './../database/types'
-import createToken from './../utils/createToken'
-import SendEmail from './../utils/sendEmail'
-import { AppError, errorHandler } from './../utils/handleError'
-import sendEmail from './../utils/sendEmail'
+import {
+  createToken,
+  AppError,
+  errorHandler,
+  sendEmail
+} from './../utils'
 
 export default class SessionController {
   public create = async (req: Request, res: Response) => {

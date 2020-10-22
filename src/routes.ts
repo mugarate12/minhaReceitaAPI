@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
 
 import { userController, sessionController } from './controllers'
-import { errorHandler, AppError } from './utils/handleError'
+import { errorHandler, AppError } from './utils'
 
 const routes = Router()
 

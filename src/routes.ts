@@ -32,6 +32,17 @@ routes.post('/users', celebrate({
 
 routes.get('/users', authJWT, userController.index)
 
+routes.put('/users', authJWT, celebrate({
+  [Segments.QUERY]: Joi.object().keys({
+    type: Joi.string().required()
+  }),
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().optional(),
+    email: Joi.string().email().optional(),
+    password: Joi.string().optional()
+  })
+}), userController.update)
+
 // session routes
 routes.post('/session', celebrate({
   [Segments.BODY]: Joi.object().keys({

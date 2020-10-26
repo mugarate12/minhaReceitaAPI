@@ -8,6 +8,12 @@ import { TABLE_USERS_NAME } from './../database/types'
 import { usersValidators } from './../validators';
 import { errorHandler, AppError } from './../utils'
 
+interface updatePayloadInterface {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
 export default class UserController {
   public create = async (req: Request, res: Response) => {
     let { name, email, password } = req.body
@@ -48,6 +54,47 @@ export default class UserController {
         })
         .catch((err: Error) => {
           return new AppError(err.name, 406, err.message, true)
+        })
+    } catch (err) {
+      return errorHandler(err, res)
+    }
+  }
+  
+  public update = async (req: Request, res: Response) => {
+    try {
+      const userID = String(res.getHeader('userID'))
+      usersValidators.authUser(userID)
+
+      const { name, email, password } = req.body
+      const { type } = req.query
+
+      let payload: updatePayloadInterface = {}
+      switch (type) {
+        case 'password':
+          payload.password = password
+          break;
+        case 'email':
+          payload.email = email
+          break;
+        case 'name':
+          payload.name = name
+          break;
+        default:
+          break;
+      }
+
+      return await connection<UsersInterface>(TABLE_USERS_NAME)
+        .where({
+          id: userID
+        })
+        .update({
+          ...payload
+        })
+        .then(userID => {
+          return res.status(200).json({ sucess: 'Operação bem sucedida'})
+        })
+        .catch((err: Error) => {
+          errorHandler(new AppError(err.name, 406, err.message, true), res)
         })
     } catch (err) {
       return errorHandler(err, res)

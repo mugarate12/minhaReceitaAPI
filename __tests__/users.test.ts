@@ -112,4 +112,102 @@ describe('Users tests', () => {
       expect(userInformationRequest.status).toBe(401)
     })
   })
+
+  describe('Update user Cases', () => {
+    let token: string
+
+    async function updateToken(newPassword: string) {
+      return await request(app)
+        .post('/session')
+        .send({
+          email: testUser.email,
+          password: newPassword
+        })
+        .then((response) => {
+          token = response.body.token
+        })
+    }
+
+    beforeAll(async () => {
+      await createUser()
+
+      return await request(app)
+        .post('/session')
+        .send({
+          email: testUser.email,
+          password: testUser.password
+        })
+        .then((response) => {
+          token = response.body.token
+        })
+    })
+
+    afterAll(async () => {
+      return await deleteUser()
+    })
+
+    it('update user password', async () => {
+      const newPassword = 'newPassword'
+
+      const updateUserPasswordRequest = await request(app)
+        .put(`/users?type=password`)
+        .send({
+          password: newPassword
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(updateUserPasswordRequest.status).toBe(200)
+      expect(updateUserPasswordRequest.body.sucess).toBeDefined()
+    })
+
+    it('update name of user', async () => {
+      const newName = 'João Pedro'
+
+      const updateUserNameRequest = await request(app)
+        .put(`/users?type=name`)
+        .send({
+          name: newName
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(updateUserNameRequest.status).toBe(200)
+      expect(updateUserNameRequest.body.sucess).toBeDefined()
+    })
+
+    it('update user email', async () => {
+      const newEmail = 'joaopedromail@mail.com'
+
+      const updateUserEmailRequest = await request(app)
+        .put(`/users?type=email`)
+        .send({
+          email: newEmail
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(updateUserEmailRequest.status).toBe(200)
+      expect(updateUserEmailRequest.body.sucess).toBeDefined()
+    })
+
+    it('celebrate error', async () => {
+      const validEmail = 'mail@mail.com'
+      const invalidEmail = 'mail.com'
+
+      const queryParamsErrorRequest = await request(app)
+        .put(`/users`)
+        .send({
+          email: validEmail
+        })
+        .set('Authorization', `Bearer ${token}`)
+      
+      const emailErrorRequest = await request(app)
+        .put(`/users?type=email`)
+        .send({
+          email: invalidEmail
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(queryParamsErrorRequest.status).toBe(400)
+      expect(emailErrorRequest.status).toBe(400)
+    })
+  })
 })

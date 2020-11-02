@@ -172,6 +172,9 @@ describe('Users tests', () => {
         })
         .set('Authorization', `Bearer ${token}`)
 
+      console.log('token:', token)
+      console.log('error:', updateUserNameRequest.body)
+
       expect(updateUserNameRequest.status).toBe(200)
       expect(updateUserNameRequest.body.sucess).toBeDefined()
     })

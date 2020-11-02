@@ -2,17 +2,12 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
+import { UserRepository } from './../repositories'
 import connection from './../database/connection'
 import { UsersInterface, BlacklistTokenInterface } from './../database/interfaces'
 import { TABLE_USERS_NAME, TABLE_BLACKLIST_TOKEN } from './../database/types'
 import { usersValidators } from './../validators';
 import { errorHandler, AppError } from './../utils'
-
-interface updatePayloadInterface {
-  name?: string;
-  email?: string;
-  password?: string;
-}
 
 export default class UserController {
   public create = async (req: Request, res: Response) => {
@@ -21,15 +16,11 @@ export default class UserController {
     const salt = await bcrypt.genSalt()
     password = await bcrypt.hash(password, salt)
 
+    const users = new UserRepository()
+
     const id = uuidv4()
 
-    return connection<UsersInterface>(TABLE_USERS_NAME)
-    .insert({
-        id,
-        email,
-        name,
-        password
-      })
+    return await users.create(email, name, password)
         .then(userID => {
           return res.status(201).json({ sucess: `Usuário criado com sucesso!` })
         })
@@ -43,12 +34,9 @@ export default class UserController {
       const userID = String(res.getHeader('userID'))
       usersValidators.authUser(userID)
 
-      return await connection<UsersInterface>(TABLE_USERS_NAME)
-        .select('email', 'name')
-        .where({
-          id: userID
-        })
-        .first()
+      const users = new UserRepository()
+
+      return await users.get(userID)
         .then(user => {
           return res.status(200).json({ user: user })
         })
@@ -69,30 +57,19 @@ export default class UserController {
       const { name, email, password } = req.body
       const { type } = req.query
 
-      let payload: updatePayloadInterface = {}
-      switch (type) {
-        case 'password':
-          const salt = await bcrypt.genSalt()
-          const hashPassword = await bcrypt.hash(password, salt)
-          payload.password = hashPassword
-          break;
-        case 'email':
-          payload.email = email
-          break;
-        case 'name':
-          payload.name = name
-          break;
-        default:
-          break;
+      const users = new UserRepository()
+
+      let hashPassword
+      if (type === 'password') {
+        const salt = await bcrypt.genSalt()
+        hashPassword = await bcrypt.hash(password, salt)
       }
 
-      return await connection<UsersInterface>(TABLE_USERS_NAME)
-        .where({
-          id: userID
-        })
-        .update({
-          ...payload
-        })
+      return await users.update(userID, {
+        email,
+        name,
+        password: hashPassword
+      })
         .then(async (userID) => {
           if (type === 'password') {
             await connection<BlacklistTokenInterface>(TABLE_BLACKLIST_TOKEN)

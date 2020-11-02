@@ -3,8 +3,8 @@ import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
 import connection from './../database/connection'
-import { UsersInterface } from './../database/interfaces'
-import { TABLE_USERS_NAME } from './../database/types'
+import { UsersInterface, BlacklistTokenInterface } from './../database/interfaces'
+import { TABLE_USERS_NAME, TABLE_BLACKLIST_TOKEN } from './../database/types'
 import { usersValidators } from './../validators';
 import { errorHandler, AppError } from './../utils'
 
@@ -64,6 +64,7 @@ export default class UserController {
     try {
       const userID = String(res.getHeader('userID'))
       usersValidators.authUser(userID)
+      const token = String(res.getHeader('token'))
 
       const { name, email, password } = req.body
       const { type } = req.query
@@ -71,7 +72,9 @@ export default class UserController {
       let payload: updatePayloadInterface = {}
       switch (type) {
         case 'password':
-          payload.password = password
+          const salt = await bcrypt.genSalt()
+          const hashPassword = await bcrypt.hash(password, salt)
+          payload.password = hashPassword
           break;
         case 'email':
           payload.email = email
@@ -89,6 +92,16 @@ export default class UserController {
         })
         .update({
           ...payload
+        })
+        .then(async (userID) => {
+          if (type === 'password') {
+            await connection<BlacklistTokenInterface>(TABLE_BLACKLIST_TOKEN)
+              .insert({
+                token: token
+              })
+          }
+          
+          return userID
         })
         .then(userID => {
           return res.status(200).json({ sucess: 'Operação bem sucedida'})

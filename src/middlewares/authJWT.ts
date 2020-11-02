@@ -3,8 +3,8 @@ import { promisify } from 'util'
 import { Request, Response, NextFunction } from 'express'
 
 import connection from './../database/connection'
-import { UsersInterface } from './../database/interfaces'
-import { TABLE_USERS_NAME } from './../database/types'
+import { UsersInterface, BlacklistTokenInterface } from './../database/interfaces'
+import { TABLE_USERS_NAME, TABLE_BLACKLIST_TOKEN } from './../database/types'
 import { AppError, errorHandler } from './../utils'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'Secret'
@@ -33,8 +33,28 @@ export default async function authJWT(req: Request, res: Response, next: NextFun
         id: idUserByToken  
       })
       .first()
-      .then(userId => {
-        res.setHeader('userId', userId?.id || '')
+      .then(userId => userId)
+      .then(async (userID) => {
+        await connection<BlacklistTokenInterface>(TABLE_BLACKLIST_TOKEN)
+          .select('*')
+          .where({
+            token: token
+          })
+          .first()
+          .then(response => {
+            if (!!response) {
+              throw new AppError('Authorization Error', 401, 'Não autorizado ou token inválido', true)
+            }
+          })
+          .catch(err => {
+            throw new AppError('Authorization Error', 401, 'Não autorizado ou token inválido', true)
+          })
+        
+        return userID
+      })
+      .then(userID => {
+        res.setHeader('userId', userID?.id || '')
+        res.setHeader('token', token)
 
         next()
       })

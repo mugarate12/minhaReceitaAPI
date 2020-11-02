@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
-import { UserRepository } from './../repositories'
+import { UserRepository, blackListTokenRepository } from './../repositories'
 import {
   createToken,
   AppError,
@@ -28,8 +28,23 @@ export default class SessionController {
 
         return databaseUser?.id
       })
-      .then(verifiedUserID => {
-        const token = createToken(verifiedUserID || '')
+      .then(async (verifiedUserID) => {
+        let token
+        const blackListToken = new blackListTokenRepository()
+        
+        let isInvalidToken = true
+        while (isInvalidToken) {
+          token = createToken(verifiedUserID || '')
+
+          await blackListToken
+            .get(token)
+            .then(blackLToken => {
+              const haveTokenInBlacklist = !!blackLToken
+
+              token = createToken(verifiedUserID || '')
+              isInvalidToken = haveTokenInBlacklist
+            })
+        }
 
         return res.status(201).json({ token: token })
       })

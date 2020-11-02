@@ -15,5 +15,18 @@ export default class BlackListTokenRepository {
         token: token
       })
   }
+
+  public get = async (token: string) => {
+    return await this.blackListToken
+      .select('token')
+      .where({
+        token
+      })
+      .first()
+      .then(token => token)
+      .catch(err => {
+        throw new err
+      })
+  }
   
 }

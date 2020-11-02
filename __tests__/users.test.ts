@@ -125,6 +125,7 @@ describe('Users tests', () => {
         })
         .then((response) => {
           token = response.body.token
+          return response.body.token
         })
     }
 
@@ -156,9 +157,7 @@ describe('Users tests', () => {
         })
         .set('Authorization', `Bearer ${token}`)
 
-      console.log('old token:', token)
-      await updateToken(newPassword)
-      console.log('new token', token)
+      const newToken = await updateToken(newPassword)
 
       expect(updateUserPasswordRequest.status).toBe(200)
       expect(updateUserPasswordRequest.body.sucess).toBeDefined()
@@ -173,9 +172,6 @@ describe('Users tests', () => {
           name: newName
         })
         .set('Authorization', `Bearer ${token}`)
-
-      console.log('token:', token)
-      console.log('error:', updateUserNameRequest.body)
 
       expect(updateUserNameRequest.status).toBe(200)
       expect(updateUserNameRequest.body.sucess).toBeDefined()

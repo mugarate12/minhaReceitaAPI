@@ -1,11 +1,7 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
-import { v4 as uuidv4 } from 'uuid'
 
-import { UserRepository } from './../repositories'
-import connection from './../database/connection'
-import { UsersInterface, BlacklistTokenInterface } from './../database/interfaces'
-import { TABLE_USERS_NAME, TABLE_BLACKLIST_TOKEN } from './../database/types'
+import { UserRepository, blackListTokenRepository } from './../repositories'
 import { usersValidators } from './../validators';
 import { errorHandler, AppError } from './../utils'
 
@@ -17,8 +13,6 @@ export default class UserController {
     password = await bcrypt.hash(password, salt)
 
     const users = new UserRepository()
-
-    const id = uuidv4()
 
     return await users.create(email, name, password)
         .then(userID => {
@@ -58,6 +52,7 @@ export default class UserController {
       const { type } = req.query
 
       const users = new UserRepository()
+      const blackListToken = new blackListTokenRepository()
 
       let hashPassword
       if (type === 'password') {
@@ -72,10 +67,7 @@ export default class UserController {
       })
         .then(async (userID) => {
           if (type === 'password') {
-            await connection<BlacklistTokenInterface>(TABLE_BLACKLIST_TOKEN)
-              .insert({
-                token: token
-              })
+            await blackListToken.create(token)
           }
           
           return userID

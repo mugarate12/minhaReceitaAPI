@@ -156,7 +156,9 @@ describe('Users tests', () => {
         })
         .set('Authorization', `Bearer ${token}`)
 
+      console.log('old token:', token)
       await updateToken(newPassword)
+      console.log('new token', token)
 
       expect(updateUserPasswordRequest.status).toBe(200)
       expect(updateUserPasswordRequest.body.sucess).toBeDefined()

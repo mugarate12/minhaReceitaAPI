@@ -30,7 +30,9 @@ export default class UserController {
 
       const users = new UserRepository()
 
-      return await users.get(userID)
+      return await users.get({
+        id: userID
+      }, ['name', 'email'])
         .then(user => {
           return res.status(200).json({ user: user })
         })

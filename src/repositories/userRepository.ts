@@ -4,11 +4,6 @@ import connection from './../database/connection'
 import { TABLE_USERS_NAME } from './../database/types'
 import { UsersInterface } from './../database/interfaces'
 
-interface user {
-  email: string;
-  name: string;
-}
-
 interface updatePayloadInterface {
   name?: string;
   email?: string;
@@ -39,17 +34,30 @@ export default class UserRepository {
   }
   
 
-  public get = async (id: string): Promise<user | undefined> => {
-    return this.users
-      .select('email', 'name')
-      .where({
-        id: id
-      })
-      .first()
-      .then(user => user)
-      .catch(err => {
-        throw new err
-      })
+  public get = async (identifiers?: { email?: string, id?: string }, options?: Array<string>) => {
+    if (!!options) {
+      return this.users
+        .select(...options)
+        .where({
+          ...identifiers
+        })
+        .first()
+        .then(user => user)
+        .catch(err => {
+          throw new err
+        })
+    } else {
+      return this.users
+        .select('*')
+        .where({
+          ...identifiers
+        })
+        .first()
+        .then(user => user)
+        .catch(err => {
+          throw new err
+        })
+    }
   }
   
   public update = async (id: string, payload: updatePayloadInterface) => {

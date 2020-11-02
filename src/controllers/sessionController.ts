@@ -2,9 +2,7 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
-import connection from './../database/connection'
-import { UsersInterface } from './../database/interfaces'
-import { TABLE_USERS_NAME } from './../database/types'
+import { UserRepository } from './../repositories'
 import {
   createToken,
   AppError,
@@ -16,12 +14,11 @@ export default class SessionController {
   public create = async (req: Request, res: Response) => {
     const { email, password } = req.body
 
-    return await connection<UsersInterface>(TABLE_USERS_NAME)
-      .select('id', 'password')
-      .where({
-        email: email
-      })
-      .first()
+    const userRepository = new UserRepository()
+
+    return await userRepository.get({
+      email
+    }, ['id', 'password'])
       .then(user => user)
       .then(async (databaseUser) => {
         const isValidPassword = await bcrypt.compare(password, databaseUser?.password || '')
@@ -44,12 +41,11 @@ export default class SessionController {
   public update = async (req: Request, res: Response) => {
     const { email } = req.body
 
-    return await connection<UsersInterface>(TABLE_USERS_NAME)
-      .select('id', 'name')
-      .where({
-        email: email
-      })
-      .first()
+    const userRepository = new UserRepository()
+
+    return await userRepository.get({
+      email
+    }, ['id', 'name'])
       .then(user => user)
       .then(async (databaseUser) => {
         const randomString = uuidv4()
@@ -57,13 +53,7 @@ export default class SessionController {
         const salt = await bcrypt.genSalt()
         const hashNewPassword = await bcrypt.hash(randomString, salt)
 
-        return await connection<UsersInterface>(TABLE_USERS_NAME)
-          .where({
-            id: databaseUser?.id
-          })
-          .update({
-            password: hashNewPassword
-          })
+        return await userRepository.update(databaseUser?.id, { password: hashNewPassword })
           .then(userID => {
             const UserInformation = {
               userName: databaseUser?.name,

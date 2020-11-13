@@ -2,7 +2,9 @@ import request from 'supertest'
 import bcrypt from 'bcryptjs'
 
 import app from './../src/app'
-import database from './../src/database/connection'
+import {
+  UserRepository
+} from './../src/repositories';
 
 describe('Session Cases', () => {
   const user = {
@@ -12,24 +14,23 @@ describe('Session Cases', () => {
   }
 
   async function registerNewUser() {
+    const users = new UserRepository()
     const salt = await bcrypt.genSalt()
     const hashPassword = await bcrypt.hash(user.password, salt)
     
-    await database('users')
-      .insert({
-        id: 'dadadoiada',
-        email: user.email,
-        name: user.name,
-        password: hashPassword
-      })
+    await users.create(user.email, user.name, hashPassword)
   }
 
   async function deleteNewUser() {
-    await database('users')
-      .where({
-        email: user.email
-      })
-      .delete()
+    const users = new UserRepository()
+    // await database('users')
+    //   .where({
+    //     email: user.email
+    //   })
+    //   .delete()
+    await users.delete({
+      email: user.email
+    })
   }
 
   describe('Session create cases', () => {

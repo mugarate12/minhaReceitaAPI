@@ -103,6 +103,18 @@ describe('Database Cases', () => {
       }
     })
   })
+
+  describe('delete user', () => {
+    it('sucess to delete user', async () => {
+      const users = new UserRepository()
+
+      const deleteUserRequest = await users.delete({
+        email: user.email
+      })
+
+      expect(deleteUserRequest).toBe(1)
+    })
+  })
   
   describe('blackListToken cases', () => {
     let token: string

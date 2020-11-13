@@ -61,7 +61,7 @@ export default class UserRepository {
   }
   
   public update = async (id: string, payload: updatePayloadInterface) => {
-    return this.users
+    return await this.users
       .where({
         id
       })
@@ -74,4 +74,16 @@ export default class UserRepository {
       })
   }
   
+
+  public delete = async (identifiers: { email?: string, id?: string }) => {
+    return await this.users
+      .where({
+        ...identifiers
+      })
+      .delete()
+      .then(userID => userID)
+      .catch(err => {
+        throw err
+      })
+  }
 } 

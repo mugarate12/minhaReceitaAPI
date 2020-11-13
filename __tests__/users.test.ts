@@ -1,13 +1,13 @@
 import app from './../src/app'
-import request, { Response } from 'supertest'
+import request from 'supertest'
 import bcrypt from 'bcryptjs'
 
-import database from './../src/database/connection';
-import { TABLE_USERS_NAME } from './../src/database/types';
-import { UsersInterface } from './../src/database/interfaces';
+import {
+  UserRepository
+} from './../src/repositories'
 
 describe('Users tests', () => {
-  const testUser = {
+  let testUser = {
     id: 'dadada',
     name: 'João',
     email: 'joaomail@mail.com',
@@ -15,19 +15,19 @@ describe('Users tests', () => {
   }
   
   async function createUser() {
+    const users = new UserRepository()
     const salt = await bcrypt.genSalt()
     const hashPassword = await bcrypt.hash(testUser.password, salt)
 
-    return await database<UsersInterface>(TABLE_USERS_NAME)
-      .insert({ ...testUser, password: hashPassword })
+    await users.create(testUser.email, testUser.name, hashPassword)
   }
 
   async function deleteUser() {
-    return await database<UsersInterface>(TABLE_USERS_NAME)
-      .where({
-        id: testUser.id
-      })
-      .delete()
+    const users = new UserRepository()
+
+    return await users.delete({
+      email: testUser.email
+    })
   }
 
   describe('Create new user cases', () => {
@@ -189,6 +189,8 @@ describe('Users tests', () => {
 
       expect(updateUserEmailRequest.status).toBe(200)
       expect(updateUserEmailRequest.body.sucess).toBeDefined()
+
+      testUser.email = newEmail
     })
 
     it('celebrate error', async () => {

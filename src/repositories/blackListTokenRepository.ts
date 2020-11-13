@@ -10,9 +10,13 @@ export default class BlackListTokenRepository {
   }
 
   public create = async (token: string) => {
-    await this.blackListToken
+    return await this.blackListToken
       .insert({
         token: token
+      })
+      .then(tokenID => tokenID)
+      .catch(err => {
+        throw err
       })
   }
 
@@ -25,7 +29,7 @@ export default class BlackListTokenRepository {
       .first()
       .then(token => token)
       .catch(err => {
-        throw new err
+        throw err
       })
   }
   

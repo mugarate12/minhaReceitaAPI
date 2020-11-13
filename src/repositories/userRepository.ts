@@ -28,8 +28,8 @@ export default class UserRepository {
         password
       })
       .then(userId => userId[0])
-      .catch(err => {
-        throw new err
+      .catch((err: Error) => {
+        throw err
       })
   }
   
@@ -44,7 +44,7 @@ export default class UserRepository {
         .first()
         .then(user => user)
         .catch(err => {
-          throw new err
+          throw err
         })
     } else {
       return this.users
@@ -55,7 +55,7 @@ export default class UserRepository {
         .first()
         .then(user => user)
         .catch(err => {
-          throw new err
+          throw err
         })
     }
   }
@@ -70,7 +70,7 @@ export default class UserRepository {
       })
       .then(userID => userID)
       .catch(err => {
-        throw new err
+        throw err
       })
   }
   

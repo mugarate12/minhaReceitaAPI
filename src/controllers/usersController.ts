@@ -2,12 +2,13 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 
 import { UserRepository, blackListTokenRepository } from './../repositories'
-import { usersValidators } from './../validators';
+import { usersValidators } from './../validators'
 import { errorHandler, AppError } from './../utils'
 
 export default class UserController {
   public create = async (req: Request, res: Response) => {
     let { name, email, password } = req.body
+    usersValidators.userPassword(password)
 
     const salt = await bcrypt.genSalt()
     password = await bcrypt.hash(password, salt)
@@ -26,7 +27,7 @@ export default class UserController {
   public index = async (req: Request, res: Response) => {
     try {
       const userID = String(res.getHeader('userID'))
-      usersValidators.authUser(userID)
+      usersValidators.AuthUser(userID)
 
       const users = new UserRepository()
 
@@ -47,17 +48,19 @@ export default class UserController {
   public update = async (req: Request, res: Response) => {
     try {
       const userID = String(res.getHeader('userID'))
-      usersValidators.authUser(userID)
+      usersValidators.AuthUser(userID)
       const token = String(res.getHeader('token'))
 
       const { name, email, password } = req.body
       const { type } = req.query
-
+      
       const users = new UserRepository()
       const blackListToken = new blackListTokenRepository()
-
+      
       let hashPassword
       if (type === 'password') {
+        usersValidators.userPassword(password)
+        
         const salt = await bcrypt.genSalt()
         hashPassword = await bcrypt.hash(password, salt)
       }

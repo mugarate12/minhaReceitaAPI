@@ -1,3 +1,3 @@
-import { AuthUser } from './usersValidator'
+import * as usersValidator from './usersValidator'
 
-export const usersValidators =  { authUser: AuthUser }
+export const usersValidators =  { ...usersValidator }

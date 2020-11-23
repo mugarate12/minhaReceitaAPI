@@ -11,7 +11,7 @@ describe('Users tests', () => {
     id: 'dadada',
     name: 'João',
     email: 'joaomail@mail.com',
-    password: 'minhasenha'
+    password: 'minhasenha123'
   }
   
   async function createUser() {
@@ -148,7 +148,7 @@ describe('Users tests', () => {
     })
 
     it('update user password', async () => {
-      const newPassword = 'newPassword'
+      const newPassword = 'newPassword123'
 
       const updateUserPasswordRequest = await request(app)
         .put(`/users?type=password`)

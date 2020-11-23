@@ -12,6 +12,7 @@ export default class UserController {
 
     const salt = await bcrypt.genSalt()
     password = await bcrypt.hash(password, salt)
+    name = name.trim()
 
     const users = new UserRepository()
 
@@ -51,7 +52,7 @@ export default class UserController {
       usersValidators.AuthUser(userID)
       const token = String(res.getHeader('token'))
 
-      const { name, email, password } = req.body
+      let { name, email, password } = req.body
       const { type } = req.query
       
       const users = new UserRepository()
@@ -63,6 +64,10 @@ export default class UserController {
         
         const salt = await bcrypt.genSalt()
         hashPassword = await bcrypt.hash(password, salt)
+      }
+
+      if (type === 'name') {
+        name = name.trim()
       }
 
       return await users.update(userID, {

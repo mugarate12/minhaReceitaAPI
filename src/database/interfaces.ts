@@ -9,3 +9,17 @@ export interface BlacklistTokenInterface {
   id: number;
   token: string;
 }
+
+export interface RecipeInterface {
+  title: string;
+  time: string;
+  number_of_portions: number;
+  preparation_mode: string;
+  observations: string;
+}
+
+export interface IngredientsInterface {
+  name: string;
+  measure: string;
+  recipeIDFK: number;
+}

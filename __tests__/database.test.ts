@@ -1,6 +1,7 @@
 import {
   UserRepository,
-  blackListTokenRepository
+  blackListTokenRepository,
+  RecipeRepository
 } from './../src/repositories'
 import createToken from './../src/utils/createToken'
 
@@ -142,6 +143,31 @@ describe('Database Cases', () => {
       const getTokenRequest = await blackListToken.get(token)
 
       expect(getTokenRequest?.token).toBeDefined()
+    })
+  })
+
+  describe('Recipe cases', () => {
+    describe('create recipe', () => {
+      it('sucess to create recipe', async () => {
+        const recipes = new RecipeRepository()
+        const recipe = {
+          title: 'bolo de banana',
+          time: '40:00',
+          number_of_portions: 10,
+          preparation_mode: 'parapraroparpoirpoa',
+          observations: 'essa é uma observação'
+        }
+
+        const createRecipeRequest = await recipes.create(
+          recipe.title,
+          recipe.time,
+          recipe.number_of_portions,
+          recipe.preparation_mode,
+          recipe.observations
+        )
+
+        expect(createRecipeRequest).toBeDefined()
+      })
     })
   })
 })

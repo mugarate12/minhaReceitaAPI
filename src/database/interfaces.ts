@@ -11,11 +11,13 @@ export interface BlacklistTokenInterface {
 }
 
 export interface RecipeInterface {
+  id: number;
   title: string;
   time: string;
   number_of_portions: number;
   preparation_mode: string;
   observations: string;
+  userIDFK: string;
 }
 
 export interface IngredientsInterface {

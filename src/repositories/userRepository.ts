@@ -33,7 +33,6 @@ export default class UserRepository {
       })
   }
   
-
   public get = async (identifiers?: { email?: string, id?: string }, options?: Array<string>) => {
     if (!!options) {
       return this.users
@@ -72,8 +71,7 @@ export default class UserRepository {
       .catch(err => {
         throw err
       })
-  }
-  
+  } 
 
   public delete = async (identifiers: { email?: string, id?: string }) => {
     return await this.users

@@ -25,7 +25,7 @@ export default class recipeRepository {
     observations: string,
     userID: string
   ) => {
-    return this.recipes.insert({
+    return await this.recipes.insert({
       title,
       time,
       number_of_portions,
@@ -40,7 +40,7 @@ export default class recipeRepository {
   }
 
   public get = async (id: number) => {
-    return this.recipes.select('*')
+    return await this.recipes.select('*')
       .where({
         id: id
       })
@@ -52,7 +52,7 @@ export default class recipeRepository {
   }
 
   public index = async (userID: string) => {
-    return this.recipes.select('*')
+    return await this.recipes.select('*')
       .where({
         userIDFK: userID
       })

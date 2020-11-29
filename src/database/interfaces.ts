@@ -21,6 +21,7 @@ export interface RecipeInterface {
 }
 
 export interface IngredientsInterface {
+  id: number;
   name: string;
   measure: string;
   recipeIDFK: number;

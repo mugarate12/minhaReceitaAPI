@@ -1,7 +1,11 @@
 import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
 
-import { userController, sessionController } from './controllers'
+import {
+  userController,
+  sessionController,
+  recipesController
+} from './controllers'
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
 
@@ -56,5 +60,47 @@ routes.put('/session', celebrate({
     email: Joi.string().email().required()
   })
 }), sessionController.update)
+
+// recipes controller
+routes.post('/recipes', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    title: Joi.string().required(),
+    time: Joi.string().required(),
+    number_of_portions: Joi.number().required(),
+    preparation_mode: Joi.string().required(),
+    observations: Joi.string().required()
+  })
+}), authJWT, recipesController.create)
+
+routes.get('/recipes', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    page: Joi.number().required()
+  })
+}), authJWT, recipesController.index)
+
+routes.get('/recipes/:id', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+}), authJWT, recipesController.get)
+
+routes.put('/recipes/:id', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  }),
+  [Segments.BODY]: Joi.object().keys({
+    title: Joi.string().optional(),
+    time: Joi.string().optional(),
+    number_of_portions: Joi.number().optional(),
+    preparation_mode: Joi.string().optional(),
+    observations: Joi.string().optional()
+  })
+}), authJWT, recipesController.update)
+
+routes.delete('/recipes/:id', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+}), authJWT, recipesController.delete)
 
 export default routes

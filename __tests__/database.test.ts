@@ -196,7 +196,7 @@ describe('Database Cases', () => {
     async function getRecipeID(userID: string) {
       const recipes = new RecipeRepository()
 
-      const getAllRecipesRequest = await recipes.index(userID)
+      const getAllRecipesRequest = await recipes.index(userID, 0, 100)
       recipeID = getAllRecipesRequest[0].id
 
       return recipeID
@@ -252,7 +252,8 @@ describe('Database Cases', () => {
           )
         } catch (error) {
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
       })
     })
@@ -276,7 +277,7 @@ describe('Database Cases', () => {
       it('get all recipes from user', async () => {
         const recipes = new RecipeRepository()
 
-        const getAllRecipesRequest = await recipes.index(userID)
+        const getAllRecipesRequest = await recipes.index(userID, 0, 100)
 
         expect(getAllRecipesRequest).toBeDefined()
         // garantindo que pra cada receita ela tenha as devidas informações
@@ -313,7 +314,7 @@ describe('Database Cases', () => {
           title: recipeNewInformation.title
         })
 
-        expect(updateRecipeTitleRequest).toBe(recipeID)
+        expect(updateRecipeTitleRequest).toBe(1)
       })
 
       it('update recipe time', async () => {
@@ -323,7 +324,7 @@ describe('Database Cases', () => {
           time: recipeNewInformation.time
         })
 
-        expect(updateRecipeTimeRequest).toBe(recipeID)
+        expect(updateRecipeTimeRequest).toBe(1)
       })
 
       it('update recipe number of portions', async () => {
@@ -333,7 +334,7 @@ describe('Database Cases', () => {
           number_of_portions: recipeNewInformation.number_of_portions
         })
 
-        expect(updateRecipeNumberOfPortions).toBe(recipeID)
+        expect(updateRecipeNumberOfPortions).toBe(1)
       })
 
       it('update recipe preparation mode', async () => {
@@ -343,7 +344,7 @@ describe('Database Cases', () => {
           preparation_mode: recipeNewInformation.preparation_mode
         })
 
-        expect(updateRecipePreparationMode).toBe(recipeID)
+        expect(updateRecipePreparationMode).toBe(1)
       })
 
       it('update recipe observation', async () => {
@@ -353,7 +354,7 @@ describe('Database Cases', () => {
           observations: recipeNewInformation.observations
         })
 
-        expect(updateRecipeObservation).toBe(recipeID)
+        expect(updateRecipeObservation).toBe(1)
       })
 
       it('failure to update recipe', async () => {
@@ -366,9 +367,9 @@ describe('Database Cases', () => {
             title: 'example'
           })
         } catch (error) {
-          console.log(error)
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
       })
     })
@@ -384,7 +385,7 @@ describe('Database Cases', () => {
 
         const deleteRecipeRequest = await recipes.delete(recipeID)
 
-        expect(deleteRecipeRequest).toBe(recipeID)
+        expect(deleteRecipeRequest).toBe(1)
       })
 
       it('failure delete recipe', async () => {
@@ -395,7 +396,8 @@ describe('Database Cases', () => {
           deleteRecipeRequest = await recipes.delete(recipeID)
         } catch (error) {
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
       });
     })
@@ -450,7 +452,7 @@ describe('Database Cases', () => {
     async function getRecipeID(userID: string) {
       const recipes = new RecipeRepository()
 
-      const getAllRecipesRequest = await recipes.index(userID)
+      const getAllRecipesRequest = await recipes.index(userID, 0, 100)
       recipeID = getAllRecipesRequest[0].id
 
       return recipeID

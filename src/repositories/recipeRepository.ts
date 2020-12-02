@@ -1,6 +1,7 @@
 import connection from './../database/connection'
 import { TABLE_RECIPE } from './../database/types'
 import { RecipeInterface } from './../database/interfaces'
+import { AppError } from './../utils'
 
 interface updateRecipeInterface {
   title?: string,
@@ -35,7 +36,7 @@ export default class recipeRepository {
     })
       .then(recipeID => recipeID[0])
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
@@ -47,19 +48,35 @@ export default class recipeRepository {
       .first()
       .then(recipe => recipe)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
-  public index = async (userID: string) => {
-    return await this.recipes.select('*')
+  public index = async (userID: string, offset: number, limit: number, options?: Array<string>) => {
+    if (!!options) {
+      return await this.recipes.select(options)
       .where({
         userIDFK: userID
       })
+      .limit(limit)
+      .offset(offset)
       .then(recipes => recipes)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
+    } else {
+      return await this.recipes.select('*')
+        .where({
+          userIDFK: userID
+        })
+        .limit(limit)
+        .offset(offset)
+        .then(recipes => recipes)
+        .catch((err: Error) => {
+          throw new AppError('Database Error', 406, err.message, true)
+        })
+    }
+    
   }
 
   public update = async (id: number, payload: updateRecipeInterface) => {
@@ -72,7 +89,7 @@ export default class recipeRepository {
       })
       .then(recipeID => recipeID)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
@@ -85,7 +102,7 @@ export default class recipeRepository {
       .delete()
       .then(recipeID => recipeID)
       .catch((err: Error) => {
-        throw err
+        throw new AppError(err.name, 406, err.message, true)
       })
   }
 }

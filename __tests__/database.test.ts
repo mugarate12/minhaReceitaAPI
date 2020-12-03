@@ -14,7 +14,7 @@ describe('Database Cases', () => {
   }
 
   describe('create user', () => {
-    it('sucess insert user on users Table', async () => {
+    test('sucess insert user on users Table', async () => {
       const users = new UserRepository()
 
       const createdUserRequest = await users.create(user.email, user.name, user.password)
@@ -22,7 +22,7 @@ describe('Database Cases', () => {
       expect(createdUserRequest).toBe(0)
     })
 
-    it('error to have user with this email on database', async () => {
+    test('error to have user with this email on database', async () => {
       const users = new UserRepository()
       let createdUserRequest
 
@@ -36,7 +36,7 @@ describe('Database Cases', () => {
   })
 
   describe('get user', () => {
-    it('sucess to get user with email', async () => {
+    test('sucess to get user with email', async () => {
       const users = new UserRepository()
       
       const getUserRequest = await users.get({
@@ -47,7 +47,7 @@ describe('Database Cases', () => {
       expect(getUserRequest.name).toBe(user.name)
     })
 
-    it('failure to get user with email not valid', async () => {
+    test('failure to get user with email not valid', async () => {
       const users = new UserRepository()
       const fakeUserEmail = 'useremailvalid@mail.com'
       let getUserRequest
@@ -64,7 +64,7 @@ describe('Database Cases', () => {
   })
 
   describe('update user', () => {
-    it('sucess to update user password or name', async () => {
+    test('sucess to update user password or name', async () => {
       const users = new UserRepository()
       const getUserRequest = await users.get({
         email: user.email
@@ -78,7 +78,7 @@ describe('Database Cases', () => {
       expect(updateUserNameRequest).toBe(1)
     })
 
-    it('sucess to update user password', async () => {
+    test('sucess to update user password', async () => {
       const users = new UserRepository()
       const getUserRequest = await users.get({
         email: user.email
@@ -92,7 +92,7 @@ describe('Database Cases', () => {
       expect(updateUserPasswordRequest).toBe(1)
     })
 
-    it('failure to update with id invalid', async () => {
+    test('failure to update with id invalid', async () => {
       const users = new UserRepository()
       const invalidId = '1111111111'
       let updateWithInvalidIdRequest
@@ -107,7 +107,7 @@ describe('Database Cases', () => {
   })
 
   describe('delete user', () => {
-    it('sucess to delete user', async () => {
+    test('sucess to delete user', async () => {
       const users = new UserRepository()
 
       const deleteUserRequest = await users.delete({
@@ -130,7 +130,7 @@ describe('Database Cases', () => {
       return createValidToken()
     })
     
-    it('insert a token to blackListToken table', async () => {
+    test('insert a token to blackListToken table', async () => {
       const blackListToken = new blackListTokenRepository()
 
       const addTokenToBlacklistRequest = await blackListToken.create(token)
@@ -138,7 +138,7 @@ describe('Database Cases', () => {
       expect(addTokenToBlacklistRequest).toBeDefined()
     })
 
-    it('verify if token exists in blackListToken table', async () => {
+    test('verify if token exists in blackListToken table', async () => {
       const blackListToken = new blackListTokenRepository()
 
       const getTokenRequest = await blackListToken.get(token)
@@ -208,7 +208,7 @@ describe('Database Cases', () => {
     })
 
     describe('create recipe', () => {
-      it('sucess to create recipe', async () => {
+      test('sucess to create recipe', async () => {
         const recipes = new RecipeRepository()
         const recipe = {
           title: 'bolo de banana',
@@ -230,7 +230,7 @@ describe('Database Cases', () => {
         expect(createRecipeRequest).toBeDefined()
       })
 
-      it('falure to create recipe', async () => {
+      test('falure to create recipe', async () => {
         const recipes = new RecipeRepository()
         const recipe = {
           title: 'bolo de banana',
@@ -259,7 +259,7 @@ describe('Database Cases', () => {
     })
 
     describe('get a recipe', () => {
-      it('sucess to get a recipe with id', async () => {
+      test('sucess to get a recipe with id', async () => {
         const recipes = new RecipeRepository()
         const recipeID = await createRecipe()
 
@@ -274,7 +274,7 @@ describe('Database Cases', () => {
         expect(getRecipeRequest?.userIDFK).toBeDefined()
       })
 
-      it('get all recipes from user', async () => {
+      test('get all recipes from user', async () => {
         const recipes = new RecipeRepository()
 
         const getAllRecipesRequest = await recipes.index(userID, 0, 100)
@@ -304,7 +304,7 @@ describe('Database Cases', () => {
         return await getRecipeID(userID)
       })
 
-      it('update recipe title', async () => {
+      test('update recipe title', async () => {
         const recipes = new RecipeRepository()
 
         const updateRecipeTitleRequest = await recipes.update(recipeID, {
@@ -314,7 +314,7 @@ describe('Database Cases', () => {
         expect(updateRecipeTitleRequest).toBe(1)
       })
 
-      it('update recipe time', async () => {
+      test('update recipe time', async () => {
         const recipes = new RecipeRepository()
 
         const updateRecipeTimeRequest = await recipes.update(recipeID, {
@@ -324,7 +324,7 @@ describe('Database Cases', () => {
         expect(updateRecipeTimeRequest).toBe(1)
       })
 
-      it('update recipe number of portions', async () => {
+      test('update recipe number of portions', async () => {
         const recipes = new RecipeRepository()
 
         const updateRecipeNumberOfPortions = await recipes.update(recipeID, {
@@ -334,7 +334,7 @@ describe('Database Cases', () => {
         expect(updateRecipeNumberOfPortions).toBe(1)
       })
 
-      it('update recipe preparation mode', async () => {
+      test('update recipe preparation mode', async () => {
         const recipes = new RecipeRepository()
 
         const updateRecipePreparationMode = await recipes.update(recipeID, {
@@ -344,7 +344,7 @@ describe('Database Cases', () => {
         expect(updateRecipePreparationMode).toBe(1)
       })
 
-      it('update recipe observation', async () => {
+      test('update recipe observation', async () => {
         const recipes = new RecipeRepository()
 
         const updateRecipeObservation = await recipes.update(recipeID, {
@@ -354,7 +354,7 @@ describe('Database Cases', () => {
         expect(updateRecipeObservation).toBe(1)
       })
 
-      it('failure to update recipe', async () => {
+      test('failure to update recipe', async () => {
         const recipes = new RecipeRepository()
         let falseID = 0
         let updateRecipeRequest
@@ -377,7 +377,7 @@ describe('Database Cases', () => {
         return await getRecipeID(userID)
       })
 
-      it('sucessful delete recipe', async () => {
+      test('sucessful delete recipe', async () => {
         const recipes = new RecipeRepository()
 
         const deleteRecipeRequest = await recipes.delete(recipeID)
@@ -385,7 +385,7 @@ describe('Database Cases', () => {
         expect(deleteRecipeRequest).toBe(1)
       })
 
-      it('failure delete recipe', async () => {
+      test('failure delete recipe', async () => {
         const recipes = new RecipeRepository()
         let deleteRecipeRequest
 
@@ -463,7 +463,7 @@ describe('Database Cases', () => {
     })
 
     describe('create ingredients of a Recipe', () => {
-      it('create one ingredient of a recipe', async () => {
+      test('create one ingredient of a recipe', async () => {
         const ingredients = new IngredientsRepository()
         const ingredient = {
           name: 'banana picada',
@@ -476,7 +476,7 @@ describe('Database Cases', () => {
         expect(createIngredientRequest).toBeDefined()
       })
 
-      it('create various ingredients of a recipe', async () => {
+      test('create various ingredients of a recipe', async () => {
         const ingredients = new IngredientsRepository()
         const ingredientsInput = [{
           name: 'molho de limão',
@@ -493,7 +493,7 @@ describe('Database Cases', () => {
         expect(createIngredientRequest).toBeDefined()
       })
 
-      it('failure to create ingredient of a invalid RecipeIDFK', async () => {
+      test('failure to create ingredient of a invalid RecipeIDFK', async () => {
         const ingredients = new IngredientsRepository()
         const ingredient = {
           name: 'banana picada',
@@ -513,7 +513,7 @@ describe('Database Cases', () => {
     })
 
     describe('get ingredients of a Recipe', () => {
-      it('sucessful get ingredients', async () => {
+      test('sucessful get ingredients', async () => {
         const ingredients = new IngredientsRepository()
 
         const getIngredientsRequest = await ingredients.index(recipeID)
@@ -528,7 +528,7 @@ describe('Database Cases', () => {
     })
 
     describe('update ingredients of a Recipe', () => {
-      it('sucessful update one ingredient name', async () => {
+      test('sucessful update one ingredient name', async () => {
         const ingredients = new IngredientsRepository()
         const IngredientsWithThisRecipe = await ingredients.index(recipeID)
         const ingredientNewName = 'novo ingrediente'
@@ -543,7 +543,7 @@ describe('Database Cases', () => {
         expect(updateIngredientsRequest).toBeDefined()
       })
 
-      it('sucessful update one ingredient measure', async () => {
+      test('sucessful update one ingredient measure', async () => {
         const ingredients = new IngredientsRepository()
         const IngredientsWithThisRecipe = await ingredients.index(recipeID)
         const ingredientNewMeasure = 'X g'
@@ -558,7 +558,7 @@ describe('Database Cases', () => {
         expect(updateIngredientsRequest).toBeDefined()
       })
 
-      it('failure update one ingredient with ingredient ID not valid', async () => {
+      test('failure update one ingredient with ingredient ID not valid', async () => {
         const ingredients = new IngredientsRepository()
         let updateIngredientsRequest
 
@@ -579,7 +579,7 @@ describe('Database Cases', () => {
     })
 
     describe('delete one ingredient of a recipe', () => {
-      it('sucessfull delete one ingredient of a recipe', async () => {
+      test('sucessfull delete one ingredient of a recipe', async () => {
         const ingredients = new IngredientsRepository()
         const IngredientsOfRecipe = await ingredients.index(recipeID)
 
@@ -588,7 +588,7 @@ describe('Database Cases', () => {
         expect(deleteIngredientRequest).toBe(IngredientsOfRecipe[0].id)
       })
 
-      it('failure delete one ingredient of a recipe with invalid recipeID', async () => {
+      test('failure delete one ingredient of a recipe with invalid recipeID', async () => {
         const ingredients = new IngredientsRepository()
         let deleteIngredientRequest
 

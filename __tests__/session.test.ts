@@ -42,7 +42,7 @@ describe('Session Cases', () => {
       await deleteNewUser()
     })
 
-    it('Sucessful request and return token', async () => {
+    test('Sucessful request and return token', async () => {
       const createTokenRequest = await request(app)
         .post('/session')
         .send({
@@ -54,7 +54,7 @@ describe('Session Cases', () => {
       expect(createTokenRequest.body.token).toBeDefined()
     })
 
-    it('celebrate error', async () => {
+    test('celebrate error', async () => {
       const createTokenRequest = await request(app)
         .post('/session')
         .send({
@@ -65,7 +65,7 @@ describe('Session Cases', () => {
       expect(createTokenRequest.status).toBe(400)
     })
 
-    it('invalid password error', async () => {
+    test('invalid password error', async () => {
       const createTokenRequest = await request(app)
         .post('/session')
         .send({
@@ -86,7 +86,7 @@ describe('Session Cases', () => {
       await deleteNewUser()
     })
 
-    it('Request for a new password for user and send to email', async () => {
+    test('Request for a new password for user and send to email', async () => {
       const createANewPasswordToUserRequest = await request(app)
         .put('/session')
         .send({
@@ -96,7 +96,7 @@ describe('Session Cases', () => {
       expect(createANewPasswordToUserRequest.status).toBe(200)
     })
 
-    it('celebrate error', async () => {
+    test('celebrate error', async () => {
       const invalidEmail = 'myInvalidEmail'
       
       const createANewPasswordToUserRequest = await request(app)
@@ -108,7 +108,7 @@ describe('Session Cases', () => {
       expect(createANewPasswordToUserRequest.status).toBe(400)
     })
 
-    it('invalid user email error', async () => {
+    test('invalid user email error', async () => {
       const userWithEmailNotExistsInDatabase = 'robinho@mail.com'
 
       const createANewPasswordToUserRequest = await request(app)

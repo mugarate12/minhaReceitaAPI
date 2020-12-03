@@ -31,7 +31,7 @@ describe('Users tests', () => {
   }
 
   describe('Create new user cases', () => {
-    it('create user sucess', async () => {
+    test('create user sucess', async () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17@gmail.com',
@@ -46,7 +46,7 @@ describe('Users tests', () => {
       expect(createUserRequest.body.sucess).toBe('Usuário criado com sucesso!')
     })
 
-    it('celebrate validate error', async () => {
+    test('celebrate validate error', async () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17',
@@ -60,7 +60,7 @@ describe('Users tests', () => {
       expect(createUserRequest.status).toBe(400)
     })
 
-    it('Database error as invalid input or not a valid user ', async () => {
+    test('Database error as invalid input or not a valid user ', async () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17@gmail.com',
@@ -96,7 +96,7 @@ describe('Users tests', () => {
       return await deleteUser()
     })
 
-    it('get a user information by resquest with token', async () => {
+    test('get a user information by resquest with token', async () => {
       const userInformationRequest = await request(app)
         .get('/users')
         .set('Authorization', `Bearer ${token}`)
@@ -104,7 +104,7 @@ describe('Users tests', () => {
       expect(userInformationRequest.status).toBe(200)
     })
 
-    it('Invalid token request', async () => {
+    test('Invalid token request', async () => {
       const userInformationRequest = await request(app)
         .get('/users')
         .set('Authorization', `Bearer dadaidjaidaodnoaidnoaidaudoisadinsa`)
@@ -147,7 +147,7 @@ describe('Users tests', () => {
       return await deleteUser()
     })
 
-    it('update user password', async () => {
+    test('update user password', async () => {
       const newPassword = 'newPassword123'
 
       const updateUserPasswordRequest = await request(app)
@@ -163,7 +163,7 @@ describe('Users tests', () => {
       expect(updateUserPasswordRequest.body.sucess).toBeDefined()
     })
 
-    it('update name of user', async () => {
+    test('update name of user', async () => {
       const newName = 'João Pedro'
 
       const updateUserNameRequest = await request(app)
@@ -177,7 +177,7 @@ describe('Users tests', () => {
       expect(updateUserNameRequest.body.sucess).toBeDefined()
     })
 
-    it('update user email', async () => {
+    test('update user email', async () => {
       const newEmail = 'joaopedromail@mail.com'
 
       const updateUserEmailRequest = await request(app)
@@ -193,7 +193,7 @@ describe('Users tests', () => {
       testUser.email = newEmail
     })
 
-    it('celebrate error', async () => {
+    test('celebrate error', async () => {
       const validEmail = 'mail@mail.com'
       const invalidEmail = 'mail.com'
 

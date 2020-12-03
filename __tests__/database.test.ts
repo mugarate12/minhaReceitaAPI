@@ -197,7 +197,7 @@ describe('Database Cases', () => {
       const recipes = new RecipeRepository()
 
       const getAllRecipesRequest = await recipes.index(userID, 0, 100)
-      recipeID = getAllRecipesRequest[0].id
+      recipeID = getAllRecipesRequest[0]?.id
 
       return recipeID
     }
@@ -286,9 +286,6 @@ describe('Database Cases', () => {
           expect(recipe?.title).toBeDefined()
           expect(recipe?.time).toBeDefined()
           expect(recipe?.number_of_portions).toBeDefined()
-          expect(recipe?.preparation_mode).toBeDefined()
-          expect(recipe?.observations).toBeDefined()
-          expect(recipe?.userIDFK).toBeDefined()
         })
       })
     })
@@ -453,7 +450,7 @@ describe('Database Cases', () => {
       const recipes = new RecipeRepository()
 
       const getAllRecipesRequest = await recipes.index(userID, 0, 100)
-      recipeID = getAllRecipesRequest[0].id
+      recipeID = getAllRecipesRequest[0]?.id
 
       return recipeID
     }
@@ -509,7 +506,8 @@ describe('Database Cases', () => {
           createIngredientRequest = await ingredients.create(ingredient)
         } catch (error) {
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
       })
     })

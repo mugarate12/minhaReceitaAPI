@@ -50,7 +50,7 @@ export default class RecipesController {
     const recipeRepository = new RecipeRepository()
 
     return await recipeRepository
-      .index(userID, offset, limit, ['id', 'title', 'time', 'number_of_portions'])
+      .index(userID, offset, limit)
       .then(recipes => {
         return res.status(200).json({ recipes: recipes })
       })

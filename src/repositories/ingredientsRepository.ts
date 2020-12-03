@@ -1,6 +1,7 @@
 import connection from './../database/connection'
 import { TABLE_INGREDIENTS } from './../database/types'
 import { IngredientsInterface } from './../database/interfaces'
+import { AppError } from './../utils'
 
 interface CreateIngredientsInterface {
   name: string;
@@ -27,7 +28,7 @@ export default class IngredientsRepository {
       .insert(ingredients)
       .then(ingredientsID => ingredientsID)
       .catch((err : Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 

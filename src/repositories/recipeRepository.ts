@@ -53,8 +53,7 @@ export default class recipeRepository {
   }
 
   public index = async (userID: string, offset: number, limit: number, options?: Array<string>) => {
-    if (!!options) {
-      return await this.recipes.select(options)
+    return await this.recipes.select(['id', 'title', 'time', 'number_of_portions'])
       .where({
         userIDFK: userID
       })
@@ -64,19 +63,6 @@ export default class recipeRepository {
       .catch((err: Error) => {
         throw new AppError('Database Error', 406, err.message, true)
       })
-    } else {
-      return await this.recipes.select('*')
-        .where({
-          userIDFK: userID
-        })
-        .limit(limit)
-        .offset(offset)
-        .then(recipes => recipes)
-        .catch((err: Error) => {
-          throw new AppError('Database Error', 406, err.message, true)
-        })
-    }
-    
   }
 
   public update = async (id: number, payload: updateRecipeInterface) => {

@@ -1,6 +1,7 @@
 import connection from './../database/connection'
 import { TABLE_BLACKLIST_TOKEN } from './../database/types'
 import { BlacklistTokenInterface } from './../database/interfaces'
+import { AppError } from './../utils'
 
 export default class BlackListTokenRepository {
   private blackListToken
@@ -15,8 +16,8 @@ export default class BlackListTokenRepository {
         token: token
       })
       .then(tokenID => tokenID)
-      .catch(err => {
-        throw err
+      .catch((err: Error) => {
+        throw new AppError('Database error', 406, err.message, true)
       })
   }
 
@@ -28,8 +29,8 @@ export default class BlackListTokenRepository {
       })
       .first()
       .then(token => token)
-      .catch(err => {
-        throw err
+      .catch((err: Error) => {
+        throw new AppError('Database error', 406, err.message, true)
       })
   }
   

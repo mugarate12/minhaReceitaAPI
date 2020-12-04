@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import connection from './../database/connection'
 import { TABLE_USERS_NAME } from './../database/types'
 import { UsersInterface } from './../database/interfaces'
+import { AppError } from './../utils'
 
 interface updatePayloadInterface {
   name?: string;
@@ -29,7 +30,7 @@ export default class UserRepository {
       })
       .then(userId => userId[0])
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
   
@@ -54,7 +55,7 @@ export default class UserRepository {
         .first()
         .then(user => user)
         .catch(err => {
-          throw err
+          throw new AppError('Database Error', 406, err.message, true)
         })
     }
   }
@@ -69,7 +70,7 @@ export default class UserRepository {
       })
       .then(userID => userID)
       .catch(err => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   } 
 
@@ -81,7 +82,7 @@ export default class UserRepository {
       .delete()
       .then(userID => userID)
       .catch(err => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 } 

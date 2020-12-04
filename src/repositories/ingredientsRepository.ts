@@ -40,7 +40,7 @@ export default class IngredientsRepository {
       })
       .then(ingredients => ingredients)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
@@ -57,7 +57,7 @@ export default class IngredientsRepository {
       .update(options)
       .then(ingredientesID => ingredientesID)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
@@ -72,7 +72,7 @@ export default class IngredientsRepository {
       .delete()
       .then(ingredientID => ingredientID)
       .catch((err: Error) => {
-        throw err
+        throw new AppError('Database Error', 406, err.message, true)
       })
   }
 }

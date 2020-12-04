@@ -28,9 +28,10 @@ describe('Database Cases', () => {
 
       try{
         createdUserRequest = await users.create(user.email, user.name, user.password)
-      } catch (err) {
-        expect(err.message).toBeDefined()
-        expect(err.name).toBeDefined()
+      } catch (error) {
+        expect(error.name).toBeDefined()
+        expect(error.httpCode).toBeDefined()
+        expect(error.isOperational).toBeDefined()
       }
     })
   })
@@ -56,9 +57,10 @@ describe('Database Cases', () => {
         getUserRequest = await users.get({
           email: fakeUserEmail
         }, ['id', 'name'])
-      } catch (err) {
-        expect(err.message).toBeDefined()
-        expect(err.name).toBeDefined()
+      } catch (error) {
+        expect(error.name).toBeDefined()
+        expect(error.httpCode).toBeDefined()
+        expect(error.isOperational).toBeDefined()
       }
     })
   })
@@ -99,9 +101,10 @@ describe('Database Cases', () => {
 
       try {
         updateWithInvalidIdRequest = await users.update(invalidId, { name: 'dada' })
-      } catch (err) {
-        expect(err.name).toBeDefined()
-        expect(err.message).toBeDefined()
+      } catch (error) {
+        expect(error.name).toBeDefined()
+        expect(error.httpCode).toBeDefined()
+        expect(error.isOperational).toBeDefined()
       }
     })
   })
@@ -571,7 +574,8 @@ describe('Database Cases', () => {
             })
         } catch (error) {
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
 
         expect(updateIngredientsRequest)
@@ -596,7 +600,8 @@ describe('Database Cases', () => {
           deleteIngredientRequest = await ingredients.delete(200000)
         } catch (error) {
           expect(error.name).toBeDefined()
-          expect(error.message).toBeDefined()
+          expect(error.httpCode).toBeDefined()
+          expect(error.isOperational).toBeDefined()
         }
       })
     })

@@ -4,7 +4,8 @@ import { celebrate, Joi, Segments } from 'celebrate'
 import {
   userController,
   sessionController,
-  recipesController
+  recipesController,
+  ingredientsController
 } from './controllers'
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
@@ -102,5 +103,39 @@ routes.delete('/recipes/:id', celebrate({
     id: Joi.number().required()
   })
 }), authJWT, recipesController.delete)
+
+// ingredients routes
+routes.post('/ingredients', celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    ingredients: Joi.array().items({
+      name: Joi.string().required(),
+      measure: Joi.string().required(),
+      recipeIDFK: Joi.number().required()
+    }).required()
+  })
+}), authJWT, ingredientsController.create)
+
+routes.get('/recipes/:id/ingredients', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+}), authJWT, ingredientsController.index)
+
+routes.put('/recipes/:id/ingredients/:ingredientID', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required(),
+    ingredientID: Joi.number().required()
+  }),
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().optional(),
+    measure: Joi.string().optional()
+  })
+}), authJWT, ingredientsController.update)
+
+routes.delete('/ingredients/:id', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+}), authJWT, ingredientsController.delete)
 
 export default routes

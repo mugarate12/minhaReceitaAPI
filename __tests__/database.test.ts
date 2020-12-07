@@ -584,12 +584,15 @@ describe('Database Cases', () => {
 
     describe('delete one ingredient of a recipe', () => {
       test('sucessfull delete one ingredient of a recipe', async () => {
+        const recipes = new RecipeRepository()
+        const getAllRecipesRequest = await recipes.index(userID, 0, 100)
+        const recipeID = getAllRecipesRequest[0]?.id
         const ingredients = new IngredientsRepository()
         const IngredientsOfRecipe = await ingredients.index(recipeID)
 
         const deleteIngredientRequest = await ingredients.delete(IngredientsOfRecipe[0].id)
 
-        expect(deleteIngredientRequest).toBe(IngredientsOfRecipe[0].id)
+        expect(deleteIngredientRequest).toBe(1)
       })
 
       test('failure delete one ingredient of a recipe with invalid recipeID', async () => {

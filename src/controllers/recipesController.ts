@@ -1,6 +1,6 @@
 import { Request, response, Response } from 'express'
 
-import { RecipeRepository } from './../repositories'
+import { RecipeRepository, IngredientsRepository } from './../repositories'
 import { usersValidators } from './../validators'
 import {
   AppError,
@@ -117,14 +117,17 @@ export default class RecipesController {
     }
 
     const recipeRepository = new RecipeRepository()
+    const ingredientsRepository = new IngredientsRepository()
 
-    return await recipeRepository
-      .delete(Number(id))
+    return await ingredientsRepository
+      .deleteAll(Number(id))
+      .then(async (response) => {
+        return await recipeRepository
+          .delete(Number(id))
+      })
       .then(response => {
         return res.status(200).json({ sucess: 'receita deletada com sucesso' })
       })
-      .catch(error => {
-        return errorHandler(error, res)
-      })
+      .catch()
   }
 }

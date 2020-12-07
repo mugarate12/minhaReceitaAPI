@@ -75,4 +75,16 @@ export default class IngredientsRepository {
         throw new AppError('Database Error', 406, err.message, true)
       })
   }
+
+  public deleteAll = async (recipeID:number) => {
+    return await this.ingredients
+      .where({
+        recipeIDFK: recipeID
+      })
+      .delete()
+      .then(ingredientID => ingredientID)
+      .catch((err: Error) => {
+        throw new AppError('Database Error', 406, err.message, true)
+      })
+  }
 }

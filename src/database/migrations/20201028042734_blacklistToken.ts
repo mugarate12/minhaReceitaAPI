@@ -5,11 +5,10 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable(TABLE_BLACKLIST_TOKEN, (table) => {
     table.increments('id').primary()
 
-    table.string('token')
+    table.string('token').notNullable()
   })
 }
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema.dropTable(TABLE_BLACKLIST_TOKEN)
 }
-

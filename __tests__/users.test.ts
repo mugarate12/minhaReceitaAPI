@@ -73,6 +73,21 @@ describe('Users tests', () => {
 
       expect(createUserRequest.status).toBe(406)
     })
+
+    test('Invalid password error', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'serjumano1000@gmail.com',
+        password: 'majuge'
+      }
+      
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+
+      expect(createUserRequest.status).toBe(406)
+      expect(createUserRequest.body.error.name).toBe('Invalid Password')
+    })
   })
 
   describe('Get User cases', () => {

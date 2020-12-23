@@ -15,7 +15,7 @@ export default class BlackListTokenRepository {
       .insert({
         token: token
       })
-      .then(tokenID => tokenID)
+      .then(tokenID => tokenID[0])
       .catch((err: Error) => {
         throw new AppError('Database error', 406, err.message, true)
       })

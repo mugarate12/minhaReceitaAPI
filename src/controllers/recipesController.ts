@@ -3,10 +3,8 @@ import { Request, response, Response } from 'express'
 import { RecipeRepository, IngredientsRepository } from './../repositories'
 import { usersValidators } from './../validators'
 import {
-  AppError,
   errorHandler
 } from './../utils'
-import { error } from 'console'
 
 export default class RecipesController {
   public create = async (req: Request, res: Response) => {
@@ -71,12 +69,12 @@ export default class RecipesController {
     const recipeRepository = new RecipeRepository()
 
     return await recipeRepository
-      .get(Number(id))
+      .get(id)
       .then(recipe => {
         return res.status(200).json({ recipe: recipe })
       })
       .catch(error => {
-        errorHandler(error, res)
+        return errorHandler(error, res)
       })
   }
 
@@ -92,7 +90,7 @@ export default class RecipesController {
     const recipeRepository = new RecipeRepository()
 
     return await recipeRepository
-      .update(Number(id), {
+      .update(id, {
         title,
         time,
         number_of_portions,
@@ -120,14 +118,16 @@ export default class RecipesController {
     const ingredientsRepository = new IngredientsRepository()
 
     return await ingredientsRepository
-      .deleteAll(Number(id))
+      .deleteAll(id)
       .then(async (response) => {
         return await recipeRepository
-          .delete(Number(id))
+          .delete(id)
       })
       .then(response => {
         return res.status(200).json({ sucess: 'receita deletada com sucesso' })
       })
-      .catch()
+      .catch(error => {
+        return errorHandler(error, res)
+      })
   }
 }

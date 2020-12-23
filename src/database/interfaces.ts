@@ -11,7 +11,7 @@ export interface BlacklistTokenInterface {
 }
 
 export interface RecipeInterface {
-  id: number;
+  id: string;
   title: string;
   time: string;
   number_of_portions: number;
@@ -24,5 +24,5 @@ export interface IngredientsInterface {
   id: number;
   name: string;
   measure: string;
-  recipeIDFK: number;
+  recipeIDFK: string;
 }

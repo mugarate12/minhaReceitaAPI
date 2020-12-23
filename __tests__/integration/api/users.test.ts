@@ -1,134 +1,16 @@
-import app from './../src/app'
 import request from 'supertest'
 import bcrypt from 'bcryptjs'
 
-import {
-  UserRepository
-} from './../src/repositories'
+import app from './../../../src/app'
+import { UserRepository } from './../../../src/repositories'
 
-describe('Users tests', () => {
-  let testUser = {
-    id: 'dadada',
-    name: 'João',
-    email: 'joaomail@mail.com',
-    password: 'minhasenha123'
-  }
-  
-  async function createUser() {
-    const users = new UserRepository()
-    const salt = await bcrypt.genSalt()
-    const hashPassword = await bcrypt.hash(testUser.password, salt)
-
-    await users.create(testUser.email, testUser.name, hashPassword)
-  }
-
-  async function deleteUser() {
-    const users = new UserRepository()
-
-    return await users.delete({
-      email: testUser.email
-    })
-  }
-
-  describe('Create new user cases', () => {
-    test('create user sucess', async () => {
-      const user = {
-        name: 'Mateus',
-        email: 'serjumano17@gmail.com',
-        password: 'majuge123'
-      }
-      
-      const createUserRequest = await request(app)
-        .post('/users')
-        .send(user)
-  
-      expect(createUserRequest.status).toBe(201)
-      expect(createUserRequest.body.sucess).toBe('Usuário criado com sucesso!')
-    })
-
-    test('celebrate validate error', async () => {
-      const user = {
-        name: 'Mateus',
-        email: 'serjumano17',
-        password: 'majuge123'
-      }
-
-      const createUserRequest = await request(app)
-        .post('/users')
-        .send(user)
-
-      expect(createUserRequest.status).toBe(400)
-    })
-
-    test('Database error as invalid input or not a valid user ', async () => {
-      const user = {
-        name: 'Mateus',
-        email: 'serjumano17@gmail.com',
-        password: 'majuge123'
-      }
-
-      const createUserRequest = await request(app)
-        .post('/users')
-        .send(user)
-
-      expect(createUserRequest.status).toBe(406)
-    })
-
-    test('Invalid password error', async () => {
-      const user = {
-        name: 'Mateus',
-        email: 'serjumano1000@gmail.com',
-        password: 'majuge'
-      }
-      
-      const createUserRequest = await request(app)
-        .post('/users')
-        .send(user)
-
-      expect(createUserRequest.status).toBe(406)
-      expect(createUserRequest.body.error.name).toBe('Invalid Password')
-    })
-  })
-
-  describe('Get User cases', () => {
-    let token: string
-    
-    beforeAll(async () => {
-      await createUser()
-
-      return await request(app)
-        .post('/session')
-        .send({
-          email: testUser.email,
-          password: testUser.password
-        })
-        .then((response) => {
-          token = response.body.token
-        })
-    })
-
-    afterAll(async () => {
-      return await deleteUser()
-    })
-
-    test('get a user information by resquest with token', async () => {
-      const userInformationRequest = await request(app)
-        .get('/users')
-        .set('Authorization', `Bearer ${token}`)
-
-      expect(userInformationRequest.status).toBe(200)
-    })
-
-    test('Invalid token request', async () => {
-      const userInformationRequest = await request(app)
-        .get('/users')
-        .set('Authorization', `Bearer dadaidjaidaodnoaidnoaidaudoisadinsa`)
-
-      expect(userInformationRequest.status).toBe(401)
-    })
-  })
-
-  describe('Update user Cases', () => {
+describe('API Requests', () => {
+  describe('User routes', () => {
+    let testUser: {
+      name: string;
+      email: string;
+      password: string;
+    }
     let token: string
 
     async function updateToken(newPassword: string) {
@@ -144,10 +26,68 @@ describe('Users tests', () => {
         })
     }
 
-    beforeAll(async () => {
-      await createUser()
+    test('create a new user with name, email and password and return status 201 and a sucess message on body', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'serjumano17@gmail.com',
+        password: 'majuge123'
+      }
+      // setando o usuario de teste com as informações do usuario criado no teste
+      testUser = user
+      
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+  
+      expect(createUserRequest.status).toBe(201)
+      expect(createUserRequest.body.sucess).toBe('Usuário criado com sucesso!')
+    })
 
-      return await request(app)
+    test('failure to create user by invalid email and return status 400', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'serjumano17',
+        password: 'majuge123'
+      }
+
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+
+      expect(createUserRequest.status).toBe(400)
+    })
+
+    test('failure to create user by invalid input or invalid user and return status 406', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'serjumano17@gmail.com',
+        password: 'majuge123'
+      }
+
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+
+      expect(createUserRequest.status).toBe(406)
+    })
+
+    test('failure to create user by invalid password error and return status 406 and "Invalid Password" message in body.error.name field', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'serjumano1000@gmail.com',
+        password: 'majuge'
+      }
+      
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+
+      expect(createUserRequest.status).toBe(406)
+      expect(createUserRequest.body.error.name).toBe('Invalid Password')
+    })
+
+    test('get user information with user Token and return status 200', async () => {
+      await request(app)
         .post('/session')
         .send({
           email: testUser.email,
@@ -156,13 +96,25 @@ describe('Users tests', () => {
         .then((response) => {
           token = response.body.token
         })
+      
+      const userInformationRequest = await request(app)
+        .get('/users')
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(userInformationRequest.status).toBe(200)
     })
 
-    afterAll(async () => {
-      return await deleteUser()
+    test('failure to get user information by invalid token and return status 401', async () => {
+      const invalidToken = 'dadadiaodiaodia'
+      
+      const userInformationRequest = await request(app)
+        .get('/users')
+        .set('Authorization', `Bearer ${invalidToken}`)
+
+      expect(userInformationRequest.status).toBe(401)
     })
 
-    test('update user password', async () => {
+    test('update user password with user token and new password and return status 200 and sucess message on body', async () => {
       const newPassword = 'newPassword123'
 
       const updateUserPasswordRequest = await request(app)
@@ -172,13 +124,13 @@ describe('Users tests', () => {
         })
         .set('Authorization', `Bearer ${token}`)
 
-      const newToken = await updateToken(newPassword)
+      await updateToken(newPassword)
 
       expect(updateUserPasswordRequest.status).toBe(200)
       expect(updateUserPasswordRequest.body.sucess).toBeDefined()
     })
 
-    test('update name of user', async () => {
+    test('update name of user with user token and return status 200 and sucess message on body', async () => {
       const newName = 'João Pedro'
 
       const updateUserNameRequest = await request(app)
@@ -192,7 +144,7 @@ describe('Users tests', () => {
       expect(updateUserNameRequest.body.sucess).toBeDefined()
     })
 
-    test('update user email', async () => {
+    test('update user email with user token and return status 200 and sucess message on body', async () => {
       const newEmail = 'joaopedromail@mail.com'
 
       const updateUserEmailRequest = await request(app)
@@ -207,10 +159,9 @@ describe('Users tests', () => {
 
       testUser.email = newEmail
     })
-
-    test('celebrate error', async () => {
+    
+    test('failure to update user information by query param no provided and return status 400', async () => {
       const validEmail = 'mail@mail.com'
-      const invalidEmail = 'mail.com'
 
       const queryParamsErrorRequest = await request(app)
         .put(`/users`)
@@ -218,7 +169,13 @@ describe('Users tests', () => {
           email: validEmail
         })
         .set('Authorization', `Bearer ${token}`)
-      
+
+      expect(queryParamsErrorRequest.status).toBe(400)
+    })
+
+    test('failure to update user information by invalid field provided and return status 400', async () => {
+      const invalidEmail = 'mail.com'
+
       const emailErrorRequest = await request(app)
         .put(`/users?type=email`)
         .send({
@@ -226,7 +183,6 @@ describe('Users tests', () => {
         })
         .set('Authorization', `Bearer ${token}`)
 
-      expect(queryParamsErrorRequest.status).toBe(400)
       expect(emailErrorRequest.status).toBe(400)
     })
   })

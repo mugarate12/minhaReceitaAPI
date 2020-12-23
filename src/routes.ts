@@ -81,13 +81,13 @@ routes.get('/recipes', celebrate({
 
 routes.get('/recipes/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.number().required()
+    id: Joi.string().required()
   })
 }), authJWT, recipesController.get)
 
 routes.put('/recipes/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.number().required()
+    id: Joi.string().required()
   }),
   [Segments.BODY]: Joi.object().keys({
     title: Joi.string().optional(),
@@ -100,7 +100,7 @@ routes.put('/recipes/:id', celebrate({
 
 routes.delete('/recipes/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.number().required()
+    id: Joi.string().required()
   })
 }), authJWT, recipesController.delete)
 
@@ -110,20 +110,20 @@ routes.post('/ingredients', celebrate({
     ingredients: Joi.array().items({
       name: Joi.string().required(),
       measure: Joi.string().required(),
-      recipeIDFK: Joi.number().required()
+      recipeIDFK: Joi.string().required()
     }).required()
   })
 }), authJWT, ingredientsController.create)
 
 routes.get('/recipes/:id/ingredients', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.number().required()
+    id: Joi.string().required()
   })
 }), authJWT, ingredientsController.index)
 
 routes.put('/recipes/:id/ingredients/:ingredientID', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.number().required(),
+    id: Joi.string().required(),
     ingredientID: Joi.number().required()
   }),
   [Segments.BODY]: Joi.object().keys({

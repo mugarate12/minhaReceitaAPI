@@ -1,42 +1,43 @@
 import request from 'supertest'
 
-import app from './../src/app'
-import { RecipeRepository } from './../src/repositories'
+import app from './../../../src/app'
+import { RecipeRepository } from './../../../src/repositories'
 
-describe('Recipes cases', () => {
-  const user = {
-    email: 'meuusuarioReceitaRecipeCases@gmail.com',
-    name: 'MateusReceita',
-    password: 'minhasenha123'
-  }
-  let token: string
-  
-  async function createUser() {
-    return request(app)
-      .post('/users')
-      .send({ ...user })
-  }
+describe('API Requests', () => {
+  describe('Recipes Routes', () => {
+    const user = {
+      email: 'meuusuarioReceitaRecipeCases@gmail.com',
+      name: 'MateusReceita',
+      password: 'minhasenha123'
+    }
+    let token: string
 
-  async function getToken() {
-    return request(app)
-      .post('/session')
-      .send({
-        email: user.email,
-        password: user.password
-      })
-      .then(requestToken => {
-        // console.log('token:', token.body.token)
-        token = requestToken.body.token
-      })
-  }
+    async function createUser() {
+      return request(app)
+        .post('/users')
+        .send({ ...user })
+    }
 
-  beforeAll(async () => {
-    await createUser()
-    return await getToken()
-  })
+    async function getToken() {
+      return request(app)
+        .post('/session')
+        .send({
+          email: user.email,
+          password: user.password
+        })
+        .then(requestToken => {
+          // console.log('token:', token.body.token)
+          token = requestToken.body.token
+        })
+    }
 
-  describe('create recipe cases', () => {
-    test('create recipe', async () => {
+    beforeAll(async () => {
+      await createUser()
+      await getToken()
+      return
+    })
+
+    test('create recipe with title, time, number of portions, preparation mode and observations and return 201 and sucess message on body', async () => {
       const recipe = {
         title: 'Meu Frango',
         time: '30 minutos',
@@ -59,7 +60,7 @@ describe('Recipes cases', () => {
       expect(createRecipeRequest.body.sucess).toBe('Receita criada com sucesso')
     })
 
-    test('failure to create recipe to celebrate error', async () => {
+    test('failure to create recipe by invalid or not provided field and return status 400', async () => {
       const recipe = {
         title: 'Bolinho de Chuva',
         time: '30 minutos',
@@ -80,7 +81,7 @@ describe('Recipes cases', () => {
       expect(createRecipeRequest.status).toBe(400)
     })
 
-    test('failure to create recipe to token not provided or invalid ', async () => {
+    test('failure to create recipe by invalid token and return status 401', async () => {
       const recipe = {
         title: 'Bolinho de Chuva',
         time: '30 minutos',
@@ -102,10 +103,8 @@ describe('Recipes cases', () => {
 
       expect(createRecipeRequest.status).toBe(401)
     })
-  })
 
-  describe('get recipe cases', () => {
-    test('get all recipes with a user', async () => {
+    test('get all recipes of a user with user token and page number to paginate result and return status 200 and array of recipes ', async () => {
       interface RecipeInterface {
         title: string
       }
@@ -125,7 +124,7 @@ describe('Recipes cases', () => {
       })
     })
 
-    test('get one recipe of a user and recipeID', async () => {
+    test('get one recipe of a user with user token and recipe ID and return status 200 and recipe information', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')
         .send({
@@ -142,7 +141,7 @@ describe('Recipes cases', () => {
       expect(getOneRecipeOfUser.body.recipe.id).toBe(recipeID)
     })
 
-    test('failure to get recipes to token not provided or invalid', async () => {
+    test('failure to get recipes by token invalid and return status 401', async () => {
       const invalidToken = 'eu sou um token invalido'
       const pageNumber = 1
 
@@ -155,10 +154,8 @@ describe('Recipes cases', () => {
 
       expect(getAllRecipesRequest.status).toBe(401)
     })
-  })
 
-  describe('update recipe cases', () => {
-    test('sucessful update recipe', async () => {
+    test('update recipe with user token and field to update and return status 200', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')
         .send({
@@ -178,7 +175,7 @@ describe('Recipes cases', () => {
       expect(updateRecipeRequest.status).toBe(200)
     })
 
-    test('failure update recipe for database error to empty fields', async () => {
+    test('failure to update recipe to not provided field and return status 406 and error in body.error name and message by database error', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')
         .send({
@@ -197,20 +194,7 @@ describe('Recipes cases', () => {
       expect(badRequestUpdateRecipe.body.error.message).toBe('Empty .update() call detected! Update data does not contain any values to update. This will result in a faulty query. Table: recipe. Columns: title,time,number_of_portions,preparation_mode,observations.')
     })
 
-    test('failure update recipe for not valid ID param', async () => {
-      const newRecipeTitle = 'sou um novo titulo'
-
-      const badRequestUpdateRecipe = await request(app)
-        .put(`/recipes/string`)
-        .send({
-          title: newRecipeTitle
-        })
-        .set('Authorization', `Bearer ${token}`)
-
-      expect(badRequestUpdateRecipe.status).toBe(400)
-    })
-
-    test('failure update recipe for token not provided', async () => {
+    test('failure update recipe by invalid token and return status 401', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')
         .send({
@@ -228,10 +212,8 @@ describe('Recipes cases', () => {
 
       expect(badRequestUpdateRecipe.status).toBe(401)
     })
-  })
 
-  describe('delete recipe cases', () => {
-    test('sucessful delete recipe', async () => {
+    test('delete a recipe with recipe ID and user token and return status 200', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')
         .send({
@@ -245,16 +227,6 @@ describe('Recipes cases', () => {
         .set('Authorization', `Bearer ${token}`)
 
       expect(deleteRecipeRequest.status).toBe(200)
-    })
-
-    test('failure delete recipe for not valid id param', async () => {
-      const invalidID = 'sou um id invalido'
-
-      const deleteRecipeRequest = await request(app)
-        .delete(`/recipes/${invalidID}`)
-        .set('Authorization', `Bearer ${token}`)
-
-      expect(deleteRecipeRequest.status).toBe(400)
     })
   })
 })

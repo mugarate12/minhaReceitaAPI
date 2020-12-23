@@ -3,7 +3,7 @@ import { TABLE_RECIPE, TABLE_USERS_NAME } from './../types'
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable(TABLE_RECIPE, (table) => {
-    table.increments('id').primary()
+    table.string('id').primary()
 
     table.string('title').notNullable()
     table.string('time').notNullable()

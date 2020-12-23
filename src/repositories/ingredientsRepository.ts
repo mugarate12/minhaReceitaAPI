@@ -6,7 +6,7 @@ import { AppError } from './../utils'
 interface CreateIngredientsInterface {
   name: string;
   measure: string;
-  recipeIDFK: number;
+  recipeIDFK: string;
 }
 
 interface updateIngredientsInterface {
@@ -26,13 +26,13 @@ export default class IngredientsRepository {
   ) => {
     return await this.ingredients
       .insert(ingredients)
-      .then(ingredientsID => ingredientsID)
+      .then(ingredientsID => ingredientsID[0])
       .catch((err : Error) => {
         throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
-  public index = async (recipeID: number) => {
+  public index = async (recipeID: string) => {
     return await this.ingredients
       .select('*')
       .where({
@@ -45,7 +45,7 @@ export default class IngredientsRepository {
   }
 
   public update = async (
-    recipeID: number,
+    recipeID: string,
     ingredientsID: number,
     options: updateIngredientsInterface
   ) => {
@@ -76,7 +76,7 @@ export default class IngredientsRepository {
       })
   }
 
-  public deleteAll = async (recipeID:number) => {
+  public deleteAll = async (recipeID: string) => {
     return await this.ingredients
       .where({
         recipeIDFK: recipeID

@@ -7,7 +7,8 @@ export async function up(knex: Knex): Promise<void> {
 
     table.string('name').notNullable()
     table.string('measure').notNullable()
-    table.integer('recipeIDFK').unsigned()
+
+    table.string('recipeIDFK').notNullable()
 
     table.foreign('recipeIDFK').references('id').inTable(TABLE_RECIPE)
   })

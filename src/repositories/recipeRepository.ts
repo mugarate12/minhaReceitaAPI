@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import connection from './../database/connection'
 import { TABLE_RECIPE } from './../database/types'
 import { RecipeInterface } from './../database/interfaces'
@@ -26,7 +28,10 @@ export default class recipeRepository {
     observations: string,
     userID: string
   ) => {
+    const id = uuidv4()
+
     return await this.recipes.insert({
+      id,
       title,
       time,
       number_of_portions,
@@ -34,13 +39,13 @@ export default class recipeRepository {
       observations,
       userIDFK: userID
     })
-      .then(recipeID => recipeID[0])
+      .then(recipeID => id)
       .catch((err: Error) => {
         throw new AppError('Database Error', 406, err.message, true)
       })
   }
 
-  public get = async (id: number) => {
+  public get = async (id: string) => {
     return await this.recipes.select('*')
       .where({
         id: id
@@ -65,7 +70,7 @@ export default class recipeRepository {
       })
   }
 
-  public update = async (id: number, payload: updateRecipeInterface) => {
+  public update = async (id: string, payload: updateRecipeInterface) => {
     return await this.recipes
       .where({
         id: id
@@ -79,7 +84,7 @@ export default class recipeRepository {
       })
   }
 
-  public delete = async (id:number) => {
+  public delete = async (id:string) => {
     return await this.recipes
       .where({
         id: id

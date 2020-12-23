@@ -38,7 +38,7 @@ export default class IngredientsController {
     const ingredientsRepository =  new IngredientsRepository()
 
     return await ingredientsRepository
-      .index(Number(id))
+      .index(id)
       .then(ingredients => {
         return res.status(200).json({ ingredients: ingredients })
       })
@@ -60,7 +60,7 @@ export default class IngredientsController {
     const ingredientsRepository = new IngredientsRepository()
 
     return await ingredientsRepository
-      .update(Number(id), Number(ingredientID), {
+      .update(id, Number(ingredientID), {
         name,
         measure
       })

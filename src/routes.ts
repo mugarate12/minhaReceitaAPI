@@ -69,7 +69,11 @@ routes.post('/recipes', celebrate({
     time: Joi.string().required(),
     number_of_portions: Joi.number().required(),
     preparation_mode: Joi.string().required(),
-    observations: Joi.string().required()
+    observations: Joi.string().required(),
+    ingredients: Joi.array().items({
+      name: Joi.string().required(),
+      measure: Joi.string().required()
+    }).optional()
   })
 }), authJWT, recipesController.create)
 

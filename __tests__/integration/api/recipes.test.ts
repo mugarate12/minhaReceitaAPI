@@ -60,6 +60,39 @@ describe('API Requests', () => {
       expect(createRecipeRequest.body.sucess).toBe('Receita criada com sucesso')
     })
 
+    test('create recipe with title, time, number of portions, preparation mode, observations and ingredients and return 201 and sucess message on body ', async () => {
+      const recipe = {
+        title: 'Meu Frango',
+        time: '30 minutos',
+        number_of_portions: 10,
+        preparation_mode: `
+        1 - prepare a massa com arroz já cozinhado
+        2 - use farinha de rosca pra empanar
+        3 - faça os bolinhos com as mãos
+        4 - use a airfreyer e deixe por 30 minutos
+        `,
+        observations: 'Receita apenas conceitual',
+        ingredients: [
+          {
+            name: 'Açucar',
+            measure: '40g'
+          },
+          {
+            name: 'café',
+            measure: '6 colheres'
+          }
+        ]
+      }
+
+      const createRecipeRequest = await request(app)
+        .post('/recipes')
+        .send({ ...recipe })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(createRecipeRequest.status).toBe(201)
+      expect(createRecipeRequest.body.sucess).toBe('Receita criada com sucesso')
+    })
+
     test('failure to create recipe by invalid or not provided field and return status 400', async () => {
       const recipe = {
         title: 'Bolinho de Chuva',

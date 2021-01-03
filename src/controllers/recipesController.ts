@@ -6,9 +6,21 @@ import {
   errorHandler
 } from './../utils'
 
+interface createRecipeInterface {
+  title: string;
+  time: string;
+  number_of_portions: number;
+  preparation_mode: string;
+  observations: string;
+  ingredients?: Array<{
+    name: string;
+    measure: string;
+  }>
+}
+
 export default class RecipesController {
   public create = async (req: Request, res: Response) => {
-    const { title, time, number_of_portions, preparation_mode, observations } = req.body
+    const { title, time, number_of_portions, preparation_mode, observations, ingredients }: createRecipeInterface = req.body
     const userID = String(res.getHeader('userID'))
     try {
       usersValidators.AuthUser(userID)
@@ -26,6 +38,26 @@ export default class RecipesController {
       observations, 
       userID)
         .then(recipeID => {
+          const ingredientsArray = ingredients?.map((value, index) => {
+            return {
+              name: value.name,
+              measure: value.measure,
+              recipeIDFK: recipeID
+            }
+          })
+
+          return ingredientsArray
+        })
+        .then(async (ingredientsArray) => {
+          if (!!ingredientsArray && ingredientsArray.length > 0) {
+            const ingredientsRepository = new IngredientsRepository()
+
+            await ingredientsRepository.create(ingredientsArray)
+            return
+          }
+          return
+        })
+        .then(response => {
           return res.status(201).json({ sucess: 'Receita criada com sucesso' })
         })
         .catch((error) => {

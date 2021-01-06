@@ -1,5 +1,8 @@
 import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
+// import multer from 'multer'
+// import path from 'path'
+import upload from './config/multer'
 
 import {
   userController,
@@ -10,6 +13,9 @@ import {
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
 
+// const upload = multer({
+//   dest: path.resolve(__dirname, '..', 'temp', 'uploads')
+// })
 const routes = Router()
 
 routes.get(`/test/:id`, async (req, res) => {
@@ -63,7 +69,7 @@ routes.put('/session', celebrate({
 }), sessionController.update)
 
 // recipes controller
-routes.post('/recipes', celebrate({
+routes.post('/recipes', upload.single('img'), celebrate({
   [Segments.BODY]: Joi.object().keys({
     title: Joi.string().required(),
     time: Joi.string().required(),

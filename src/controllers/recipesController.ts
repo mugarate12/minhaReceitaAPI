@@ -1,4 +1,4 @@
-import { Request, response, Response } from 'express'
+import { Request, response, Response, Express } from 'express'
 
 import { RecipeRepository, IngredientsRepository } from './../repositories'
 import { usersValidators } from './../validators'
@@ -18,16 +18,22 @@ interface createRecipeInterface {
   }>
 }
 
+interface RequestFileInterface extends Express.Multer.File {
+  key?: string;
+}
+
 export default class RecipesController {
   public create = async (req: Request, res: Response) => {
     const { title, time, number_of_portions, preparation_mode, observations, ingredients }: createRecipeInterface = req.body
+    const { key }: RequestFileInterface = req.file
     const userID = String(res.getHeader('userID'))
     try {
       usersValidators.AuthUser(userID)
     } catch (error) {
       return errorHandler(error, res)
     }
-
+    
+    const imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${key}`
     const recipeRepository = new RecipeRepository()
 
     return await recipeRepository.create(

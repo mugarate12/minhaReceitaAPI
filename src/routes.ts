@@ -69,7 +69,7 @@ routes.put('/session', celebrate({
 }), sessionController.update)
 
 // recipes controller
-routes.post('/recipes', upload.single('img'), celebrate({
+routes.post('/recipes', authJWT, upload.single('img'), celebrate({
   [Segments.BODY]: Joi.object().keys({
     title: Joi.string().required(),
     time: Joi.string().required(),
@@ -81,7 +81,7 @@ routes.post('/recipes', upload.single('img'), celebrate({
       measure: Joi.string().required()
     }).optional()
   })
-}), authJWT, recipesController.create)
+}), recipesController.create)
 
 routes.get('/recipes', celebrate({
   [Segments.BODY]: Joi.object().keys({

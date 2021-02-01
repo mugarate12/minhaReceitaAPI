@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer('number_of_portions').notNullable()
     table.text('preparation_mode').notNullable()
     table.text('observations').notNullable()
+    table.string('imgURL').nullable()
 
     table.string('userIDFK').notNullable()
 

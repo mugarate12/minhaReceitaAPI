@@ -22,18 +22,24 @@ interface RequestFileInterface extends Express.Multer.File {
   key?: string;
 }
 
+interface CustomRequest extends Request {
+  file: RequestFileInterface;
+}
+
 export default class RecipesController {
-  public create = async (req: Request, res: Response) => {
+  public create = async (req: CustomRequest, res: Response) => {
     const { title, time, number_of_portions, preparation_mode, observations, ingredients }: createRecipeInterface = req.body
-    const { key }: RequestFileInterface = req.file
     const userID = String(res.getHeader('userID'))
+    let imgURL
     try {
       usersValidators.AuthUser(userID)
     } catch (error) {
       return errorHandler(error, res)
     }
     
-    const imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${key}`
+    if (!!req.file) {
+      imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${req.file.key}`
+    }
     const recipeRepository = new RecipeRepository()
 
     return await recipeRepository.create(
@@ -42,7 +48,8 @@ export default class RecipesController {
       number_of_portions, 
       preparation_mode, 
       observations, 
-      userID)
+      userID,
+      imgURL)
         .then(recipeID => {
           const ingredientsArray = ingredients?.map((value, index) => {
             return {

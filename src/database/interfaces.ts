@@ -18,6 +18,7 @@ export interface RecipeInterface {
   preparation_mode: string;
   observations: string;
   userIDFK: string;
+  imgURL?: string;
 }
 
 export interface IngredientsInterface {

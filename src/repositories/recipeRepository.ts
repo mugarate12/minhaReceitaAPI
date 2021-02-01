@@ -26,7 +26,8 @@ export default class recipeRepository {
     number_of_portions: number,
     preparation_mode: string,
     observations: string,
-    userID: string
+    userID: string,
+    imgURL?: string
   ) => {
     const id = uuidv4()
 
@@ -37,7 +38,8 @@ export default class recipeRepository {
       number_of_portions,
       preparation_mode,
       observations,
-      userIDFK: userID
+      userIDFK: userID,
+      imgURL
     })
       .then(recipeID => id)
       .catch((err: Error) => {

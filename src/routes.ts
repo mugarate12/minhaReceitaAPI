@@ -8,7 +8,8 @@ import {
   userController,
   sessionController,
   recipesController,
-  ingredientsController
+  ingredientsController,
+  publicUsersController
 } from './controllers'
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
@@ -37,11 +38,14 @@ routes.post('/users', celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    username: Joi.string().required()
   })
 }), userController.create)
 
 routes.get('/users', authJWT, userController.index)
+
+routes.get('/users/:username', publicUsersController.get)
 
 routes.put('/users', authJWT, celebrate({
   [Segments.QUERY]: Joi.object().keys({
@@ -50,7 +54,8 @@ routes.put('/users', authJWT, celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().optional(),
     email: Joi.string().email().optional(),
-    password: Joi.string().optional()
+    password: Joi.string().optional(),
+    username: Joi.string().optional()
   })
 }), userController.update)
 

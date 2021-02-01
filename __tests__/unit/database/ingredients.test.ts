@@ -9,7 +9,8 @@ describe('Database', () => {
     const user = {
       email: 'databaseTestIngredientsRepository@mail.com',
       name: 'DatabaseTest',
-      password: 'mytest123'
+      password: 'mytest123',
+      username: 'ingredientsDatabaseTestUsername'
     }
     let userID: string
     let recipeID: string
@@ -17,7 +18,7 @@ describe('Database', () => {
     async function createUser() {
       const users = new UserRepository()
 
-      const createdUserRequest = await users.create(user.email, user.name, user.password)
+      const createdUserRequest = await users.create(user.email, user.name, user.password, user.username)
       return createdUserRequest
     }
 

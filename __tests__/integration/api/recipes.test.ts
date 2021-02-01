@@ -8,7 +8,8 @@ describe('API Requests', () => {
     const user = {
       email: 'meuusuarioReceitaRecipeCases@gmail.com',
       name: 'MateusReceita',
-      password: 'minhasenha123'
+      password: 'minhasenha123',
+      username: 'RecipeAPITestUsername'
     }
     let token: string
 

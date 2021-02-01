@@ -7,7 +7,7 @@ import { errorHandler, AppError } from './../utils'
 
 export default class UserController {
   public create = async (req: Request, res: Response) => {
-    let { name, email, password } = req.body
+    let { name, email, password, username } = req.body
     try {
       usersValidators.userPassword(password)
     } catch (error) {
@@ -20,7 +20,7 @@ export default class UserController {
 
     const users = new UserRepository()
 
-    return await users.create(email, name, password)
+    return await users.create(email, name, password, username)
       .then(userID => {
         return res.status(201).json({ sucess: `Usuário criado com sucesso!` })
       })
@@ -60,7 +60,7 @@ export default class UserController {
     }
     const token = String(res.getHeader('token'))
 
-    let { name, email, password } = req.body
+    let { name, email, password, username } = req.body
     const { type } = req.query
     
     const users = new UserRepository()
@@ -81,7 +81,8 @@ export default class UserController {
     return await users.update(userID, {
       email,
       name,
-      password: hashPassword
+      password: hashPassword,
+      username
     })
       .then(async (userID) => {
         if (type === 'password') {

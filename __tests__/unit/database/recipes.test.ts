@@ -8,7 +8,8 @@ describe('Database', () => {
     const user = {
       email: 'databaseTestRecipeRepository@mail.com',
       name: 'DatabaseTest',
-      password: 'mytest123'
+      password: 'mytest123',
+      username: 'recipeDatabaseTestUsername'
     }
     const recipeInformationForUpdatesRequest = {
       title: 'bolo de cenoura',
@@ -23,7 +24,7 @@ describe('Database', () => {
     async function createUser() {
       const users = new UserRepository()
 
-      const createdUserRequest = await users.create(user.email, user.name, user.password)
+      const createdUserRequest = await users.create(user.email, user.name, user.password, user.username)
       return createdUserRequest
     }
 

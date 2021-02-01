@@ -10,6 +10,7 @@ describe('API Requests', () => {
       name: string;
       email: string;
       password: string;
+      username: string;
     }
     let token: string
 
@@ -30,7 +31,8 @@ describe('API Requests', () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17@gmail.com',
-        password: 'majuge123'
+        password: 'majuge123',
+        username: 'APITestUsername'
       }
       // setando o usuario de teste com as informações do usuario criado no teste
       testUser = user
@@ -47,7 +49,8 @@ describe('API Requests', () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17',
-        password: 'majuge123'
+        password: 'majuge123',
+        username: 'APITestUsername'
       }
 
       const createUserRequest = await request(app)
@@ -61,7 +64,8 @@ describe('API Requests', () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano17@gmail.com',
-        password: 'majuge123'
+        password: 'majuge123',
+        username: 'APITestUsername'
       }
 
       const createUserRequest = await request(app)
@@ -75,7 +79,8 @@ describe('API Requests', () => {
       const user = {
         name: 'Mateus',
         email: 'serjumano1000@gmail.com',
-        password: 'majuge'
+        password: 'majuge',
+        username: 'APITestUsername'
       }
       
       const createUserRequest = await request(app)
@@ -102,6 +107,13 @@ describe('API Requests', () => {
         .set('Authorization', `Bearer ${token}`)
 
       expect(userInformationRequest.status).toBe(200)
+    })
+
+    test('get user information with username and return status 200 with json content name, email and username', async () => {
+      const userInformationRequest = await request(app)
+        .get(`/users/{testUser.username}`)
+      
+        expect(userInformationRequest.status).toBe(200)
     })
 
     test('failure to get user information by invalid token and return status 401', async () => {
@@ -158,6 +170,22 @@ describe('API Requests', () => {
       expect(updateUserEmailRequest.body.sucess).toBeDefined()
 
       testUser.email = newEmail
+    })
+
+    test('update username with user token and return status 200 and sucess message on body', async () => {
+      const newUsername = 'APITestNewUsername'
+
+      const updateUserEmailRequest = await request(app)
+        .put(`/users?type=email`)
+        .send({
+          username: newUsername
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(updateUserEmailRequest.status).toBe(200)
+      expect(updateUserEmailRequest.body.sucess).toBeDefined()
+
+      testUser.username = newUsername
     })
     
     test('failure to update user information by query param no provided and return status 400', async () => {

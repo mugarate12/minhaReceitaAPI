@@ -9,6 +9,7 @@ interface updatePayloadInterface {
   name?: string;
   email?: string;
   password?: string;
+  username?: string;
 }
 
 export default class UserRepository {
@@ -18,7 +19,7 @@ export default class UserRepository {
     this.users = connection<UsersInterface>(TABLE_USERS_NAME)
   }
 
-  public create = async (email: string, name: string, password: string) => {
+  public create = async (email: string, name: string, password: string, username: string) => {
     const id = uuidv4()
 
     return this.users
@@ -26,7 +27,8 @@ export default class UserRepository {
         id,
         email,
         name,
-        password
+        password,
+        username
       })
       .then(userId => userId[0])
       .catch((err: Error) => {
@@ -34,7 +36,7 @@ export default class UserRepository {
       })
   }
   
-  public get = async (identifiers?: { email?: string, id?: string }, options?: Array<string>) => {
+  public get = async (identifiers?: { email?: string, id?: string, username?: string }, options?: Array<string>) => {
     if (!!options) {
       return this.users
         .select(...options)
@@ -74,7 +76,7 @@ export default class UserRepository {
       })
   } 
 
-  public delete = async (identifiers: { email?: string, id?: string }) => {
+  public delete = async (identifiers: { email?: string, id?: string, username?: string }) => {
     return await this.users
       .where({
         ...identifiers

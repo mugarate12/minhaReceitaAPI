@@ -9,7 +9,8 @@ describe('API Requests', () => {
     const user = {
       email: 'sessionRoutesTestes@gmail.com',
       name: 'MateusC',
-      password: 'minhasenha'
+      password: 'minhasenha',
+      username: 'SessionAPITestUsername'
     }
 
     async function registerNewUser() {
@@ -17,7 +18,7 @@ describe('API Requests', () => {
       const salt = await bcrypt.genSalt()
       const hashPassword = await bcrypt.hash(user.password, salt)
       
-      await users.create(user.email, user.name, hashPassword)
+      await users.create(user.email, user.name, hashPassword, user.username)
     }
 
     beforeAll(async () => {

@@ -5,13 +5,14 @@ describe('Database', () => {
     const user = {
       email: 'databaseTestUserRepository@mail.com',
       name: 'DatabaseTest',
-      password: 'mytest123'
+      password: 'mytest123',
+      username: 'databaseTestUsername'
     }
     
     test('create user in database with userRepository and return "0" if sucessful insertion', async () => {
       const users = new UserRepository()
 
-      const createdUserRequest = await users.create(user.email, user.name, user.password)
+      const createdUserRequest = await users.create(user.email, user.name, user.password, user.username)
       
       expect(createdUserRequest).toBe(0)
     })
@@ -21,7 +22,7 @@ describe('Database', () => {
       let createdUserRequest
 
       try{
-        createdUserRequest = await users.create(user.email, user.name, user.password)
+        createdUserRequest = await users.create(user.email, user.name, user.password, user.username)
       } catch (error) {
         expect(error.name).toBeDefined()
         expect(error.httpCode).toBeDefined()
@@ -82,6 +83,21 @@ describe('Database', () => {
       })
 
       expect(updateUserPasswordRequest).toBe(1)
+    })
+
+    test('update username by user.id and return "1" if sucessful update', async () => {
+      const users = new UserRepository()
+      const getUserRequest = await users.get({
+        email: user.email
+      }, ['id'])
+      const newUsername = 'databaseTestNewUsername'
+
+      const updateUsernameRequest = await users.update(getUserRequest.id, {
+        username: newUsername
+      })
+
+      expect(updateUsernameRequest).toBe(1)
+
     })
 
     test('failure update user by invalid user.id and return App Error', async () => {

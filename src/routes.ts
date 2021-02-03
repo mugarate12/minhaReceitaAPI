@@ -9,7 +9,8 @@ import {
   sessionController,
   recipesController,
   ingredientsController,
-  publicUsersController
+  publicUsersController,
+  publicRecipesController
 } from './controllers'
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
@@ -45,7 +46,11 @@ routes.post('/users', celebrate({
 
 routes.get('/users', authJWT, userController.index)
 
-routes.get('/users/:username', publicUsersController.get)
+routes.get('/users/:username', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    username: Joi.string().required()
+  })
+}), publicUsersController.get)
 
 routes.put('/users', authJWT, celebrate({
   [Segments.QUERY]: Joi.object().keys({
@@ -99,6 +104,22 @@ routes.get('/recipes/:id', celebrate({
     id: Joi.string().required()
   })
 }), authJWT, recipesController.get)
+
+routes.get('/users/:username/recipes', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    username: Joi.string().required()
+  }),
+  [Segments.QUERY]: Joi.object().keys({
+    page: Joi.string().required()
+  })
+}), publicRecipesController.index)
+
+routes.get('/users/:username/recipes/:id', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    username: Joi.string().required(),
+    id: Joi.string().required()
+  })
+}), publicRecipesController.get)
 
 routes.put('/recipes/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({

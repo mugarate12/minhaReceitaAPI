@@ -111,9 +111,9 @@ describe('API Requests', () => {
 
     test('get user information with username and return status 200 with json content name, email and username', async () => {
       const userInformationRequest = await request(app)
-        .get(`/users/{testUser.username}`)
+        .get(`/users/${testUser.username}`)
       
-        expect(userInformationRequest.status).toBe(200)
+      expect(userInformationRequest.status).toBe(200)
     })
 
     test('failure to get user information by invalid token and return status 401', async () => {

@@ -120,6 +120,35 @@ describe('Database', () => {
       })
     })
 
+    test('get all recipes by username, offset and limite and return recipes if sucessful', async () => {
+      const recipes = new RecipeRepository()
+
+      const getAllRecipesRequest = await recipes.indexByUsername(user.username, 0, 100)
+
+      expect(getAllRecipesRequest).toBeDefined()
+      getAllRecipesRequest?.map((recipe) => {
+        expect(recipe?.id).toBeDefined()
+        expect(recipe?.title).toBeDefined()
+        expect(recipe?.time).toBeDefined()
+        expect(recipe?.number_of_portions).toBeDefined()
+      })
+    })
+
+    test('get one recipe by username and recipe.id and return this recipe if sucessful', async () => {
+      const recipes = new RecipeRepository()
+
+      const getOneRecipeRequest = await recipes.getByUsername(user.username, recipeID)
+
+      expect(getOneRecipeRequest?.id).toBeDefined()
+      expect(getOneRecipeRequest?.title).toBeDefined()
+      expect(getOneRecipeRequest?.time).toBeDefined()
+      expect(getOneRecipeRequest?.number_of_portions).toBeDefined()
+      expect(getOneRecipeRequest?.observations).toBeDefined()
+      expect(getOneRecipeRequest?.preparation_mode).toBeDefined()
+      expect(getOneRecipeRequest?.imgURL).toBeDefined()
+      expect(getOneRecipeRequest?.userIDFK).toBeDefined()
+    })
+
     test('update recipe title with recipeID and new title and return "1" if sucessful update', async () => {
       const recipes = new RecipeRepository()
 

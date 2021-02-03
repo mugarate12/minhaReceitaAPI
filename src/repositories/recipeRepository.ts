@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 
 import connection from './../database/connection'
-import { TABLE_RECIPE } from './../database/types'
-import { RecipeInterface } from './../database/interfaces'
+import { TABLE_RECIPE, TABLE_USERS_NAME } from './../database/types'
+import { RecipeInterface, UsersInterface } from './../database/interfaces'
 import { AppError } from './../utils'
 
 interface updateRecipeInterface {
@@ -59,8 +59,28 @@ export default class recipeRepository {
       })
   }
 
+  public getByUsername = async (username: string, id: string) => {
+    const user = await connection<UsersInterface>(TABLE_USERS_NAME)
+        .select('id')
+        .where({
+          username: username
+        })
+        .first()
+
+    return await this.recipes.select('*')
+      .where({
+        id: id,
+        userIDFK: user?.id
+      })
+      .first()
+      .then(recipe => recipe)
+      .catch((err: Error) => {
+        throw new AppError('Database Error', 406, err.message, true)
+      })
+  }
+
   public index = async (userID: string, offset: number, limit: number, options?: Array<string>) => {
-    return await this.recipes.select(['id', 'title', 'time', 'number_of_portions'])
+    return await this.recipes.select(['id', 'title', 'time', 'number_of_portions', 'imgURL'])
       .where({
         userIDFK: userID
       })
@@ -70,6 +90,26 @@ export default class recipeRepository {
       .catch((err: Error) => {
         throw new AppError('Database Error', 406, err.message, true)
       })
+  }
+
+  public indexByUsername = async (username: string, offset: number, limit: number, options?: Array<string>) => {
+      const user = await connection<UsersInterface>(TABLE_USERS_NAME)
+        .select('id')
+        .where({
+          username: username
+        })
+        .first()
+      
+      return await this.recipes.select(['id', 'title', 'time', 'number_of_portions', 'imgURL'])
+        .where({
+          userIDFK: user?.id
+        })
+        .limit(limit)
+        .offset(offset)
+        .then(recipes => recipes)
+        .catch((err: Error) => {
+          throw new AppError('Database Error', 406, err.message, true)
+        })
   }
 
   public update = async (id: string, payload: updateRecipeInterface) => {

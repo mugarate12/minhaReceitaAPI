@@ -158,6 +158,32 @@ describe('API Requests', () => {
       })
     })
 
+    test('get all recipe of user with username and page number to paginate result and return status 200 and array of recipes', async () => {
+      const pageNumber = 1
+
+      const getAllRecipesRequest = await request(app)
+        .get(`/users/${user.username}/recipes?page=${pageNumber}`)
+
+      expect(getAllRecipesRequest.status).toBe(200)
+      expect(getAllRecipesRequest.body.recipes).toBeDefined()
+    })
+
+    test('get one recipe of user with username and recipe.id and return status 200 and array of recipes', async () => {
+      const getAllRecipesRequest = await request(app)
+        .get('/recipes')
+        .send({
+          page: 1
+        })
+        .set('Authorization', `Bearer ${token}`)
+      const recipeID = getAllRecipesRequest.body.recipes[0].id
+
+      const getOneRecipeRequest = await request(app)
+        .get(`/users/${user.username}/recipes/${recipeID}`)
+
+      expect(getOneRecipeRequest.status).toBe(200)
+      expect(getOneRecipeRequest.body.recipe).toBeDefined()
+    })
+
     test('get one recipe of a user with user token and recipe ID and return status 200 and recipe information', async () => {
       const getAllRecipesRequest = await request(app)
         .get('/recipes')

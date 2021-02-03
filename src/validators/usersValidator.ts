@@ -17,3 +17,13 @@ export function userPassword(password: string) {
     throw new AppError('Invalid Password', 406, 'Password need have numbers', true)
   }
 }
+
+export function userUsername(username: string) {
+  username = username.trim()
+  
+  const haveSpaces = username.includes(' ')
+
+  if (haveSpaces) {
+    throw new AppError('Invalid username', 406, 'username not have spaces', true)
+  }
+}

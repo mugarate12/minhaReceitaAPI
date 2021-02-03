@@ -52,6 +52,12 @@ routes.get('/users/:username', celebrate({
   })
 }), publicUsersController.get)
 
+routes.get('/users/:username/valid', celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    username: Joi.string().required()
+  })
+}), publicUsersController.validUsername)
+
 routes.put('/users', authJWT, celebrate({
   [Segments.QUERY]: Joi.object().keys({
     type: Joi.string().required()

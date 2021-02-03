@@ -41,6 +41,14 @@ describe('Database', () => {
       expect(getUserRequest.name).toBe(user.name)
     })
 
+    test('verify if have a username in database with username and return true if contains and not to dont have a username', async () => {
+      const users = new UserRepository()
+
+      const haveUsernameRequest = await users.haveUsername(user.username)
+
+      expect(haveUsernameRequest).toBe(true)
+    })
+
     test('failure to get user information and return error by invalid user email', async () => {
       const users = new UserRepository()
       const fakeUserEmail = 'useremailvalid@mail.com'

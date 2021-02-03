@@ -10,6 +10,7 @@ export default class UserController {
     let { name, email, password, username } = req.body
     try {
       usersValidators.userPassword(password)
+      usersValidators.userUsername(username)
     } catch (error) {
       return errorHandler(error, res)
     }

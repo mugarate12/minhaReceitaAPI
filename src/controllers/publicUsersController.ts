@@ -19,4 +19,18 @@ export default class PublicUsersController {
         return errorHandler(error, res)
       })
   }
+
+  public validUsername = async (req: Request, res: Response) => {
+    const { username } = req.params
+    const usersRepository = new UserRepository()
+
+    return await usersRepository
+      .haveUsername(username)
+      .then(isvalid => {
+        return res.status(200).json({ valid: !isvalid })
+      })
+      .catch(error => {
+        return errorHandler(error, res)
+      })
+  }
 }

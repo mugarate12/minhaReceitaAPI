@@ -75,6 +75,22 @@ describe('API Requests', () => {
       expect(createUserRequest.status).toBe(406)
     })
 
+    test('failure to create user by invalid username error and return status 406 and "Invalid username" message in body.error.name field', async () => {
+      const user = {
+        name: 'Mateus',
+        email: 'failureEmailUsername@gmail.com',
+        password: 'majuge123',
+        username: 'my username'
+      }
+      
+      const createUserRequest = await request(app)
+        .post('/users')
+        .send(user)
+
+      expect(createUserRequest.status).toBe(406)
+      expect(createUserRequest.body.error.name).toBe('Invalid username')
+    })
+    
     test('failure to create user by invalid password error and return status 406 and "Invalid Password" message in body.error.name field', async () => {
       const user = {
         name: 'Mateus',
@@ -114,6 +130,14 @@ describe('API Requests', () => {
         .get(`/users/${testUser.username}`)
       
       expect(userInformationRequest.status).toBe(200)
+    })
+
+    test('get if a username is available with username and return with json content valid boolean property', async () => {
+      const isValidUsernameRequest = await request(app)
+        .get(`/users/${testUser.username}/valid`)
+
+      expect(isValidUsernameRequest.status).toBe(200)
+      expect(isValidUsernameRequest.body.valid).toBe(false)
     })
 
     test('failure to get user information by invalid token and return status 401', async () => {

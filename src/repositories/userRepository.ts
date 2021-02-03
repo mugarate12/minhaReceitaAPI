@@ -61,6 +61,25 @@ export default class UserRepository {
         })
     }
   }
+
+  public haveUsername = async (username: string) => {
+    return this.users
+      .select('username')
+      .where({
+        username: username
+      })
+      .first()
+      .then(user => {
+        if (!!user) {
+          return true
+        } else {
+          return false
+        }
+      })
+      .catch(err => {
+        throw new AppError('Database Error', 406, err.message, true)
+      })
+  }
   
   public update = async (id: string, payload: updatePayloadInterface) => {
     return await this.users

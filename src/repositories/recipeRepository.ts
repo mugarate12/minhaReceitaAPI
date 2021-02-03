@@ -10,7 +10,8 @@ interface updateRecipeInterface {
   time?: string,
   number_of_portions?: number,
   preparation_mode?: string,
-  observations?: string
+  observations?: string,
+  imgURL?: string
 }
 
 export default class recipeRepository {

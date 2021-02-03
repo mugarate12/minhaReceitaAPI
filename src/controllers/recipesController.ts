@@ -150,6 +150,42 @@ export default class RecipesController {
       })
   }
 
+  public updatePhoto = async (req: CustomRequest, res: Response) => {
+    const { id } = req.params
+    const userID = String(res.getHeader('userID'))
+    let imgURL
+    try {
+      usersValidators.AuthUser(userID)
+    } catch (error) {
+      return errorHandler(error, res)
+    }
+
+    if (!!req.file) {
+      imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${req.file.key}`
+    }
+    const recipeRepository = new RecipeRepository()
+
+    if (!!imgURL) {
+      return await recipeRepository
+        .update(id, {
+          imgURL
+        })
+          .then(response => {
+            return res.status(200).json({ sucess: 'imagem da receita alterada com sucesso!'})
+          })
+          .catch(err => {
+            return errorHandler(err, res)
+          })
+    } else {
+      return res.status(406).json({
+        error: {
+          name: 'Invalid Image',
+          message: 'Unexpected error occurred, please try again'
+        }
+      })
+    }
+  }
+
   public delete = async (req: Request, res: Response) => {
     const { id } = req.params
     const userID = String(res.getHeader('userID'))

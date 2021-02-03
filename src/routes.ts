@@ -1,7 +1,5 @@
 import { Router } from 'express'
 import { celebrate, Joi, Segments } from 'celebrate'
-// import multer from 'multer'
-// import path from 'path'
 import upload from './config/multer'
 
 import {
@@ -139,6 +137,12 @@ routes.put('/recipes/:id', celebrate({
     observations: Joi.string().optional()
   })
 }), authJWT, recipesController.update)
+
+routes.put('/recipes/:id/img', authJWT, upload.single('img'), celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.string().required()
+  })
+}), recipesController.updatePhoto)
 
 routes.delete('/recipes/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({

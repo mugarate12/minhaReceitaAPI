@@ -79,7 +79,7 @@ export default class RecipesController {
   }
 
   public index = async (req: Request, res: Response) => {
-    const { page } = req.body
+    const { page } = req.query
     const userID = String(res.getHeader('userID'))
     try {
       usersValidators.AuthUser(userID)
@@ -88,7 +88,7 @@ export default class RecipesController {
     }
 
     const limit = 10
-    const offset = 10 * (page - 1)
+    const offset = 10 * (Number(page) - 1)
 
     const recipeRepository = new RecipeRepository()
 

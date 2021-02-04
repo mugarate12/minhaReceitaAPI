@@ -53,10 +53,10 @@ describe('API Requests', () => {
 
     async function getRecipeID() {
       const getAllRecipesRequest = await request(app)
-          .get('/recipes')
-          .send({
-            page: 1
-          })
+          .get(`/recipes?page=${1}`)
+          // .send({
+          //   page: 1
+          // })
           .set('Authorization', `Bearer ${token}`)
         const lastRecipe = getAllRecipesRequest.body.recipes.length - 1
   

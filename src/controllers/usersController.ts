@@ -1,9 +1,17 @@
-import { Request, Response } from 'express'
+import { Request, Response, Express } from 'express'
 import bcrypt from 'bcryptjs'
 
 import { UserRepository, blackListTokenRepository } from './../repositories'
 import { usersValidators } from './../validators'
 import { errorHandler, AppError } from './../utils'
+
+interface RequestFileInterface extends Express.Multer.File {
+  key?: string;
+}
+
+interface CustomRequest extends Request {
+  file: RequestFileInterface;
+}
 
 export default class UserController {
   public create = async (req: Request, res: Response) => {
@@ -52,7 +60,7 @@ export default class UserController {
     
   }
   
-  public update = async (req: Request, res: Response) => {
+  public update = async (req: CustomRequest, res: Response) => {
     const userID = String(res.getHeader('userID'))
     try {
       usersValidators.AuthUser(userID)
@@ -60,9 +68,14 @@ export default class UserController {
       return errorHandler(error, res)
     }
     const token = String(res.getHeader('token'))
+    let imgURL
 
     let { name, email, password, username, biografy } = req.body
-    // const { type } = req.query
+    if (!!req.file) {
+      if (!!req.file.key) {
+        imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${req.file.key}`
+      }
+    }
     
     const users = new UserRepository()
     const blackListToken = new blackListTokenRepository()
@@ -84,7 +97,8 @@ export default class UserController {
       name,
       password: !!password ? hashPassword : password,
       username,
-      biografy
+      biografy,
+      imgURL
     })
       .then(async (userID) => {
         if (!!password) {

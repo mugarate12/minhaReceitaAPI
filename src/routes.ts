@@ -56,10 +56,7 @@ routes.get('/users/:username/valid', celebrate({
   })
 }), publicUsersController.validUsername)
 
-routes.put('/users', authJWT, celebrate({
-  // [Segments.QUERY]: Joi.object().keys({
-  //   type: Joi.string().required()
-  // }),
+routes.put('/users', authJWT, upload.single('img'), celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().optional(),
     email: Joi.string().email().optional(),

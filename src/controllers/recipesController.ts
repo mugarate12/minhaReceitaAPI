@@ -38,7 +38,9 @@ export default class RecipesController {
     }
     
     if (!!req.file) {
-      imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${req.file.key}`
+      if (!!req.file.key) {
+        imgURL = `https://${process.env.BUCKET_NAME}.s3-${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${req.file.key}`
+      }
     }
     const recipeRepository = new RecipeRepository()
 

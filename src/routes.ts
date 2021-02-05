@@ -96,9 +96,6 @@ routes.post('/recipes', authJWT, upload.single('img'), celebrate({
 }), recipesController.create)
 
 routes.get('/recipes', celebrate({
-  // [Segments.BODY]: Joi.object().keys({
-  //   page: Joi.number().required()
-  // }),
   [Segments.QUERY]: Joi.object().keys({
     page: Joi.string().required()
   })

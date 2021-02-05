@@ -57,14 +57,15 @@ routes.get('/users/:username/valid', celebrate({
 }), publicUsersController.validUsername)
 
 routes.put('/users', authJWT, celebrate({
-  [Segments.QUERY]: Joi.object().keys({
-    type: Joi.string().required()
-  }),
+  // [Segments.QUERY]: Joi.object().keys({
+  //   type: Joi.string().required()
+  // }),
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().optional(),
     email: Joi.string().email().optional(),
     password: Joi.string().optional(),
-    username: Joi.string().optional()
+    username: Joi.string().optional(),
+    biografy: Joi.string().optional()
   })
 }), userController.update)
 

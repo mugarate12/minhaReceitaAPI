@@ -42,7 +42,7 @@ export default class UserController {
 
     return await users.get({
       id: userID
-    }, ['name', 'email'])
+    }, ['name', 'email', 'username', 'biografy', 'imgURL'])
       .then(user => {
         return res.status(200).json({ user: user })
       })
@@ -61,32 +61,33 @@ export default class UserController {
     }
     const token = String(res.getHeader('token'))
 
-    let { name, email, password, username } = req.body
-    const { type } = req.query
+    let { name, email, password, username, biografy } = req.body
+    // const { type } = req.query
     
     const users = new UserRepository()
     const blackListToken = new blackListTokenRepository()
     
     let hashPassword
-    if (type === 'password') {
+    if (!!password) {
       usersValidators.userPassword(password)
       
       const salt = await bcrypt.genSalt()
       hashPassword = await bcrypt.hash(password, salt)
     }
 
-    if (type === 'name') {
+    if (!!name) {
       name = name.trim()
     }
 
     return await users.update(userID, {
       email,
       name,
-      password: hashPassword,
-      username
+      password: !!password ? hashPassword : password,
+      username,
+      biografy
     })
       .then(async (userID) => {
-        if (type === 'password') {
+        if (!!password) {
           await blackListToken.create(token)
         }
         

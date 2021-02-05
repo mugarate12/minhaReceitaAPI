@@ -154,7 +154,7 @@ describe('API Requests', () => {
       const newPassword = 'newPassword123'
 
       const updateUserPasswordRequest = await request(app)
-        .put(`/users?type=password`)
+        .put(`/users`)
         .send({
           password: newPassword
         })
@@ -170,7 +170,7 @@ describe('API Requests', () => {
       const newName = 'João Pedro'
 
       const updateUserNameRequest = await request(app)
-        .put(`/users?type=name`)
+        .put(`/users`)
         .send({
           name: newName
         })
@@ -184,7 +184,7 @@ describe('API Requests', () => {
       const newEmail = 'joaopedromail@mail.com'
 
       const updateUserEmailRequest = await request(app)
-        .put(`/users?type=email`)
+        .put(`/users`)
         .send({
           email: newEmail
         })
@@ -200,7 +200,7 @@ describe('API Requests', () => {
       const newUsername = 'APITestNewUsername'
 
       const updateUserEmailRequest = await request(app)
-        .put(`/users?type=email`)
+        .put(`/users`)
         .send({
           username: newUsername
         })
@@ -211,25 +211,26 @@ describe('API Requests', () => {
 
       testUser.username = newUsername
     })
-    
-    test('failure to update user information by query param no provided and return status 400', async () => {
-      const validEmail = 'mail@mail.com'
 
-      const queryParamsErrorRequest = await request(app)
+    test('update biografy with user token and return status 200 and sucess message on body', async () => {
+      const newBiografy = 'Minha biografia pode ser do tamanho que eu quiser'
+
+      const updateUserEmailRequest = await request(app)
         .put(`/users`)
         .send({
-          email: validEmail
+          biografy: newBiografy
         })
         .set('Authorization', `Bearer ${token}`)
 
-      expect(queryParamsErrorRequest.status).toBe(400)
+      expect(updateUserEmailRequest.status).toBe(200)
+      expect(updateUserEmailRequest.body.sucess).toBeDefined()
     })
 
     test('failure to update user information by invalid field provided and return status 400', async () => {
       const invalidEmail = 'mail.com'
 
       const emailErrorRequest = await request(app)
-        .put(`/users?type=email`)
+        .put(`/users`)
         .send({
           email: invalidEmail
         })

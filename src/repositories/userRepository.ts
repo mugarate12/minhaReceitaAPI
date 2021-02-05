@@ -10,6 +10,8 @@ interface updatePayloadInterface {
   email?: string;
   password?: string;
   username?: string;
+  biografy?: string;
+  imgURL?: string;
 }
 
 export default class UserRepository {

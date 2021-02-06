@@ -114,11 +114,20 @@ export default class RecipesController {
     }
 
     const recipeRepository = new RecipeRepository()
+    const ingredientsRepository = new IngredientsRepository()
 
     return await recipeRepository
       .get(id)
       .then(recipe => {
-        return res.status(200).json({ recipe: recipe })
+        return recipe
+      })
+      .then(async (recipe) => {
+        await ingredientsRepository.index(id)
+          .then(ingredients => {
+            return res.status(200).json({
+              recipe: {...recipe, ingredients: ingredients}
+            })
+          })
       })
       .catch(error => {
         return errorHandler(error, res)

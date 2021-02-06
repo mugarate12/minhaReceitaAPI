@@ -187,9 +187,6 @@ describe('API Requests', () => {
     test('get one recipe of a user with user token and recipe ID and return status 200 and recipe information', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
-        // .send({
-        //   page: 1
-        // })
         .set('Authorization', `Bearer ${token}`)
       const recipeID = getAllRecipesRequest.body.recipes[0].id
 
@@ -207,9 +204,6 @@ describe('API Requests', () => {
 
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${pageNumber}`)
-        // .send({
-        //   page: pageNumber
-        // })
         .set('Authorization', `Bearer ${invalidToken}`)
 
       expect(getAllRecipesRequest.status).toBe(401)
@@ -218,9 +212,6 @@ describe('API Requests', () => {
     test('update recipe with user token and field to update and return status 200', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
-        // .send({
-        //   page: 1
-        // })
         .set('Authorization', `Bearer ${token}`)
       const recipeID = getAllRecipesRequest.body.recipes[0].id
       const newRecipeTitle = 'novo titulo pro bolinho de chuva'
@@ -238,9 +229,6 @@ describe('API Requests', () => {
     test('failure to update recipe to not provided field and return status 406 and error in body.error name and message by database error', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
-        // .send({
-        //   page: 1
-        // })
         .set('Authorization', `Bearer ${token}`)
       const recipeID = getAllRecipesRequest.body.recipes[0].id
 
@@ -257,9 +245,6 @@ describe('API Requests', () => {
     test('failure update recipe by invalid token and return status 401', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
-        // .send({
-        //   page: 1
-        // })
         .set('Authorization', `Bearer ${token}`)
       const recipeID = getAllRecipesRequest.body.recipes[0].id
       const newRecipeTitle = 'sou um novo titulo'
@@ -276,9 +261,6 @@ describe('API Requests', () => {
     test('delete a recipe with recipe ID and user token and return status 200', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
-        // .send({
-        //   page: 1
-        // })
         .set('Authorization', `Bearer ${token}`)
       const recipeID = getAllRecipesRequest.body.recipes[0].id
       

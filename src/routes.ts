@@ -12,10 +12,8 @@ import {
 } from './controllers'
 import { errorHandler, AppError } from './utils'
 import authJWT from './middlewares/authJWT'
+import getIngredients from './middlewares/getIngredients'
 
-// const upload = multer({
-//   dest: path.resolve(__dirname, '..', 'temp', 'uploads')
-// })
 const routes = Router()
 
 routes.get(`/test/:id`, async (req, res) => {
@@ -81,7 +79,7 @@ routes.put('/session', celebrate({
 }), sessionController.update)
 
 // recipes controller
-routes.post('/recipes', authJWT, upload.single('img'), celebrate({
+routes.post('/recipes', authJWT, upload.single('img'), getIngredients, celebrate({
   [Segments.BODY]: Joi.object().keys({
     title: Joi.string().required(),
     time: Joi.string().required(),

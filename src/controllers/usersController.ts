@@ -1,7 +1,7 @@
 import { Request, Response, Express } from 'express'
 import bcrypt from 'bcryptjs'
 
-import { UserRepository, blackListTokenRepository } from './../repositories'
+import { UserRepository, blackListTokenRepository, RecipeRepository } from './../repositories'
 import { usersValidators } from './../validators'
 import { errorHandler, AppError } from './../utils'
 
@@ -47,12 +47,24 @@ export default class UserController {
     }
 
     const users = new UserRepository()
+    const recipeRepository = new RecipeRepository()
 
     return await users.get({
       id: userID
     }, ['name', 'email', 'username', 'biografy', 'imgURL'])
       .then(user => {
-        return res.status(200).json({ user: user })
+        return user
+      })
+      .then(async (user) => {
+        await recipeRepository.getTotalOfRecipes({
+          id: userID
+        })
+          .then(totalOfRecipes => {
+            return res.status(200).json({ 
+              user: user,
+              totalOfRecipes: totalOfRecipes
+            })
+          })
       })
       .catch((err) => {
         return errorHandler(err, res)

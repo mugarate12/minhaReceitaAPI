@@ -60,6 +60,24 @@ export default class recipeRepository {
       })
   }
 
+  public getTotalOfRecipes = async (userIdentifiers?: { email?: string, id?: string, username?: string }) => {
+    const user = await connection<UsersInterface>(TABLE_USERS_NAME)
+      .select('id')
+      .where({
+        ...userIdentifiers
+      })
+      .first()
+    
+    return await this.recipes.count('id')
+      .where({
+        userIDFK: user?.id
+      })
+      .then(total => total[0]['count(`id`)'])
+      .catch((err: Error) => {
+        throw new AppError('Database Error', 406, err.message, true)
+      })
+  }
+
   public getByUsername = async (username: string, id: string) => {
     const user = await connection<UsersInterface>(TABLE_USERS_NAME)
         .select('id')

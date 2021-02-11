@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 
-import { RecipeRepository } from './../repositories'
+import { RecipeRepository, IngredientsRepository } from './../repositories'
 import { errorHandler } from './../utils'
 
 export default class PublicRecipesController {
@@ -23,13 +23,22 @@ export default class PublicRecipesController {
   }
 
   public get = async (req: Request, res: Response) => {
-    const { username, id } = req.params
+    const { id } = req.params
     const recipeRepository = new RecipeRepository()
+    const ingredientsRepository = new IngredientsRepository()
 
     return await recipeRepository
-      .getByUsername(username, id)
+      .get(id)
         .then(recipe => {
-          return res.status(200).json({ recipe: recipe })
+          return recipe
+        })
+        .then(async (recipe) => {
+          await ingredientsRepository.index(id)
+            .then(ingredients => {
+              return res.status(200).json({
+                recipe: {...recipe, ingredients}
+              })
+            })
         })
         .catch((error) => {
           return errorHandler(error, res)

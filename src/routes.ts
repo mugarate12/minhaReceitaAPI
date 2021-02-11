@@ -114,9 +114,8 @@ routes.get('/users/:username/recipes', celebrate({
   })
 }), publicRecipesController.index)
 
-routes.get('/users/:username/recipes/:id', celebrate({
+routes.get('/recipes/public/:id', celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    username: Joi.string().required(),
     id: Joi.string().required()
   })
 }), publicRecipesController.get)

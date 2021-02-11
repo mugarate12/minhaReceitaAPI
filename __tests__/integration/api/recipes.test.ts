@@ -168,7 +168,7 @@ describe('API Requests', () => {
       expect(getAllRecipesRequest.body.recipes).toBeDefined()
     })
 
-    test('get one recipe of user with username and recipe.id and return status 200 and array of recipes', async () => {
+    test('get one recipe with recipe.id and return status 200 and array of recipes', async () => {
       const getAllRecipesRequest = await request(app)
         .get(`/recipes?page=${1}`)
         // .send({
@@ -178,7 +178,7 @@ describe('API Requests', () => {
       const recipeID = getAllRecipesRequest.body.recipes[0].id
 
       const getOneRecipeRequest = await request(app)
-        .get(`/users/${user.username}/recipes/${recipeID}`)
+        .get(`/recipes/public/${recipeID}`)
 
       expect(getOneRecipeRequest.status).toBe(200)
       expect(getOneRecipeRequest.body.recipe).toBeDefined()

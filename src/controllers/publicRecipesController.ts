@@ -15,7 +15,18 @@ export default class PublicRecipesController {
     return await recipeRepository
       .indexByUsername(username, offset, limit)
         .then(recipes => {
-          return res.status(200).json({ recipes: recipes })
+          return recipes
+        })
+        .then(async (recipes) => {
+          return await recipeRepository.getTotalOfRecipes({
+            username: username
+          })
+            .then(totalOfRecipes => {
+              return res.status(200).json({
+                recipes: recipes,
+                totalOfRecipes
+              })
+            })
         })
         .catch((error) => {
           return errorHandler(error, res)
